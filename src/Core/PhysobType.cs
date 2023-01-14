@@ -8,21 +8,22 @@
         /// <summary>
         /// If the object is an item, this is its type.
         /// </summary>
-        public readonly AbstractPhysicalObject.AbstractObjectType? ObjectType { get; }
+        public readonly AbstractPhysicalObject.AbstractObjectType ObjectType { get; }
         /// <summary>
         /// If the object is a creature, this is its type.
         /// </summary>
-        public readonly CreatureTemplate.Type? CritType { get; }
+        public readonly CreatureTemplate.Type CritType { get; }
         /// <summary>
         /// True if the object is a creature.
         /// </summary>
-        public readonly bool IsCrit => CritType != null;
+        public readonly bool IsCrit => ObjectType == AbstractPhysicalObject.AbstractObjectType.Creature;
 
         /// <summary>
         /// Creates a new <see cref="PhysobType"/> that represents an object type.
         /// </summary>
         public PhysobType(AbstractPhysicalObject.AbstractObjectType objectType) : this()
         {
+            CritType = CreatureTemplate.Type.StandardGroundCreature;
             ObjectType = objectType;
         }
 
@@ -32,6 +33,7 @@
         public PhysobType(CreatureTemplate.Type critType) : this()
         {
             CritType = critType;
+            ObjectType = AbstractPhysicalObject.AbstractObjectType.Creature;
         }
 
         /// <summary>
@@ -56,7 +58,7 @@
         /// <inheritdoc/>
         public override readonly string? ToString()
         {
-            return IsCrit ? CritType!.ToString() : ObjectType!.ToString();
+            return IsCrit ? CritType.ToString() : ObjectType.ToString();
         }
 
         /// <summary>

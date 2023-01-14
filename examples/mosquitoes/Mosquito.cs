@@ -262,8 +262,8 @@ namespace Mosquitoes
 
         int bites = 2;
 
-        int IPlayerEdible.BitesLeft => bites;
-        int IPlayerEdible.FoodPoints => (int)Mathf.Lerp(1f, 3f, bloat);
+        public int BitesLeft => bites;
+        public int FoodPoints => (int)Mathf.Lerp(1f, 3f, bloat);
         bool IPlayerEdible.Edible => true;
         bool IPlayerEdible.AutomaticPickUp => false;
 

@@ -1,10 +1,10 @@
 ﻿{
-  "id": "fisobs",
-  "name": "Fisobs",
-  "version": "3.0.0",
+  "id": "centipede-shields",
+  "name": "Centipede Shields",
+  "version": "1.0.0",
   "authors": "Dual",
-  "description": "Simplifies adding new objects to Rain World.",
-  "requirements": [],
-  "requirements_names": [],
+  "description": "When a centipede's shell breaks off, it might become an item you can pick up and use as a shield.",
+  "requirements": ["fisobs"],
+  "requirements_names": ["Fisobs"],
   "checksum_override_version": false
 }

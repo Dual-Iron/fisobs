@@ -33,7 +33,10 @@ namespace Fisobs.Properties
             On.ScavengerAI.RealWeapon += ScavengerAI_RealWeapon;
             On.ScavengerAI.WeaponScore += ScavengerAI_WeaponScore;
             On.ScavengerAI.CollectScore_PhysicalObject_bool += ScavengerAI_CollectScore_PhysicalObject_bool;
-            IL.Player.ObjectEaten += Player_ObjectEaten;
+
+            // Food
+            On.Player.ObjectEaten += Player_ObjectEaten;
+            On.SlugcatStats.NourishmentOfObjectEaten += SlugcatStats_NourishmentOfObjectEaten;
         }
 
         private ItemProperties? P(PhysicalObject po)

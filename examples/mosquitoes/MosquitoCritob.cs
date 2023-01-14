@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using static PathCost.Legality;
 using CreatureType = CreatureTemplate.Type;
 using Fisobs.Sandbox;
+using MoreSlugcats;
 
 namespace Mosquitoes
 {
@@ -155,9 +156,13 @@ namespace Mosquitoes
             }
         }
 
-        public override void Meat(Player player, ref bool meat)
+        public override void Nourishment(Player player, ref int quarterPips)
         {
-            meat = true;
+            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Saint) {
+                quarterPips = -1;
+            } else {
+                quarterPips = 4 * mosquito.FoodPoints;
+            }
         }
     }
 }

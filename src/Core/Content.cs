@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Security.Permissions;
 using UnityEngine;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
 namespace Fisobs.Core
 {

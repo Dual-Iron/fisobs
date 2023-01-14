@@ -58,29 +58,24 @@ namespace Fisobs.Properties
             return ret;
         }
 
-        private void Player_ObjectEaten(ILContext il)
+        static Player? player;
+        private void Player_ObjectEaten(On.Player.orig_ObjectEaten orig, Player self, IPlayerEdible edible)
         {
             try {
-                ILCursor cursor = new(il);
-
-                cursor.GotoNext(MoveType.Before, i => i.MatchStloc(1));
-                cursor.GotoPrev(MoveType.After, i => i.MatchLdloc(0));
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.Emit(OpCodes.Ldarg_1);
-                cursor.EmitDelegate<Func<bool, Player, IPlayerEdible, bool>>(Instance.ModifyIsMeat);
-
-            } catch (Exception e) {
-                Debug.LogException(e);
-                Console.WriteLine($"Couldn't register fisobs in \"{nameof(Fisobs)}\" because of exception in {nameof(Player_ObjectEaten)}: {e.Message}");
+                player = self;
+                orig(self, edible);
+            } finally {
+                player = null;
             }
         }
 
-        private bool ModifyIsMeat(bool meat, Player player, IPlayerEdible edible)
+        private int SlugcatStats_NourishmentOfObjectEaten(On.SlugcatStats.orig_NourishmentOfObjectEaten orig, SlugcatStats.Name slugcatIndex, IPlayerEdible eatenobject)
         {
-            if (edible is PhysicalObject o) {
-                P(o)?.Meat(player, ref meat);
+            int quarterPips = orig(slugcatIndex, eatenobject);
+            if (player != null && eatenobject is PhysicalObject o) {
+                P(o)?.Nourishment(player, ref quarterPips);
             }
-            return meat;
+            return quarterPips;
         }
     }
 }

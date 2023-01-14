@@ -79,7 +79,7 @@
         /// </summary>
         /// <remarks>This is ignored unless the item implements the <see cref="IPlayerEdible"/> interface.</remarks>
         /// <param name="player">The player.</param>
-        /// <param name="meat">True if the item counts as "meat" in hunter mode.</param>
-        public virtual void Meat(Player player, ref bool meat) { }
+        /// <param name="quarterPips">The amount of quarter pips the food should give. If eaten by Saint, a value of -1 will stun the player.</param>
+        public virtual void Nourishment(Player player, ref int quarterPips) { }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using BepInEx;
 using Fisobs.Core;
+using System.Security.Permissions;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
 namespace Mosquitoes
 {
-    // ⚠ It's important that you add this BepInDependency attribute:
-
-    [BepInDependency("github.notfood.BepInExPartialityWrapper", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("org.dual.mosquitoes", nameof(Mosquitoes), "0.1.0")]
+    [BepInPlugin("org.dual.mosquitoes", nameof(Mosquitoes), "1.0.0")]
     sealed class Plugin : BaseUnityPlugin
     {
         public void OnEnable()

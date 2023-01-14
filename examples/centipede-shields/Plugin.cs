@@ -1,15 +1,21 @@
 ﻿using BepInEx;
 using Fisobs.Core;
 using System.Linq;
+using System.Security.Permissions;
 using UnityEngine;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
 namespace CentiShields
 {
-    [BepInPlugin("org.dual.centishields", nameof(CentiShields), "0.1.0")]
+    [BepInPlugin("org.dual.centishields", nameof(CentiShields), "1.0.0")]
     sealed class Plugin : BaseUnityPlugin
     {
         public void OnEnable()
         {
+            On.RainWorld.Update += RainWorld_Update;
+
             Content.Register(new CentiShieldFisob());
 
             // Create centi shields when centipedes lose their shells
@@ -17,6 +23,16 @@ namespace CentiShields
 
             // Protect the player from grabs while holding a shield
             On.Creature.Grab += CreatureGrab;
+        }
+
+        private void RainWorld_Update(On.RainWorld.orig_Update orig, RainWorld self)
+        {
+            try {
+                orig(self);
+            }
+            catch (System.Exception e) {
+                Logger.LogError(e);
+            }
         }
 
         void RoomAddObject(On.Room.orig_AddObject orig, Room self, UpdatableAndDeletable obj)

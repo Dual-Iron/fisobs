@@ -73,13 +73,19 @@ namespace Fisobs.Core
         }
 
         /// <summary>
-        /// Loads an icon for a critob named <paramref name="critobName"/> into <see cref="Futile.atlasManager"/> if the resource exists.
+        /// Loads an icon for a critob named <paramref name="name"/> into <see cref="Futile.atlasManager"/> if the resource exists.
         /// </summary>
-        /// <param name="critobName">The critob's name.</param>
+        /// <param name="name">The critob's name.</param>
         /// <returns>If the resource was successfully loaded, the atlas; otherwise, <see langword="null"/>.</returns>
-        public static FAtlas? LoadIconAtlas(string critobName)
+        public static string IconAtlasName(string name)
         {
-            return Futile.atlasManager.LoadAtlas($"fisobs/icon_{critobName}.png");
+            try {
+                Futile.atlasManager.LoadImage($"icon_{name}");
+
+                return $"icon_{name}";
+            } catch {
+                return "Futile_White";
+            }
         }
     }
 }

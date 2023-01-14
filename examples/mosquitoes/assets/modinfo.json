@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "authors": "Dual and Ratrat",
   "description": "An example creature added using Fisobs.",
-  "requirements": [],
-  "requirements_names": [],
+  "requirements": ["fisobs"],
+  "requirements_names": [ "Fisobs" ],
   "checksum_override_version": false
 }

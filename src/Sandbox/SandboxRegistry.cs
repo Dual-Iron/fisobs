@@ -26,11 +26,12 @@ namespace Fisobs.Sandbox
         /// <inheritdoc/>
         protected override void Initialize()
         {
-            // Special SBUC support
-            On.RainWorld.Start += LateHooks;
+            // Editor UI
+            IL.Menu.SandboxEditorSelector.ctor += AddCustomFisobs;
+            On.Menu.SandboxSettingsInterface.ctor += AddPages;
+            On.Menu.SandboxEditorSelector.ctor += ResetWidthAndHeight;
 
             // Items + Creatures
-            On.Menu.SandboxEditorSelector.ctor += ResetWidthAndHeight;
             On.SandboxGameSession.SpawnEntity += SpawnEntity;
             On.MultiplayerUnlocks.SymbolDataForSandboxUnlock += FromUnlock;
             On.MultiplayerUnlocks.SandboxUnlockForSymbolData += FromSymbolData;
@@ -41,14 +42,6 @@ namespace Fisobs.Sandbox
 
             // Creatures
             On.Menu.SandboxSettingsInterface.DefaultKillScores += DefaultKillScores;
-        }
-
-        private void LateHooks(On.RainWorld.orig_Start orig, RainWorld self)
-        {
-            IL.Menu.SandboxEditorSelector.ctor += il => AddCustomFisobs(il, false);
-            On.Menu.SandboxSettingsInterface.ctor += AddPages;
-
-            orig(self);
         }
     }
 }

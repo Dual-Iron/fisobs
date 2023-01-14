@@ -63,7 +63,7 @@ namespace Fisobs.Creatures
         /// <param name="rainWorld">The current <see cref="RainWorld"/> instance.</param>
         public virtual void LoadResources(RainWorld rainWorld)
         {
-            string iconName = Ext.LoadIconAtlas(Type.value)?.name ?? "Futile_White";
+            string iconName = Ext.IconAtlasName(Type.value);
 
             if (Icon is DefaultIcon) {
                 Icon = new SimpleIcon(iconName, Ext.MenuGrey);

@@ -14,30 +14,25 @@ namespace Fisobs.Sandbox
     {
         private delegate void InsertSandboxDelegate(SandboxEditorSelector self, ref int counter);
 
-        private void AddCustomFisobs(ILContext il, bool sbuc)
+        private void AddCustomFisobs(ILContext il)
         {
             ILCursor cursor = new(il);
 
             try {
-                OpCode load_self = sbuc ? OpCodes.Ldarg_2 : OpCodes.Ldarg_0;
-                int arg_self = sbuc ? 2 : 0;
-                int loc_creatureIter = sbuc ? 14 : 3;
-                int loc_counter = sbuc ? 2 : 0;
-
-                // Move before creatures are added. The const `0` is the initial iteration value, just before the loop starts
-                cursor.GotoNext(MoveType.Before, i => i.MatchLdcI4(0) && i.Next.MatchStloc(loc_creatureIter));
+                // Move to the instruction after the end of the first finally block, to add behavior just after the 'add physical objects to menu' foreach loop.
+                cursor.Prev = il.Body.ExceptionHandlers[0].HandlerEnd;
 
                 // Call `InsertPhysicalObjects` with `this` and `ref counter`
-                cursor.Emit(load_self);
-                cursor.Emit(OpCodes.Ldloca_S, il.Body.Variables[loc_counter]);
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldloca_S, il.Body.Variables[0]);
                 cursor.EmitDelegate<InsertSandboxDelegate>(InsertPhysicalObjects);
 
-                // Move after creatures are added, before play button is added. The const `1` is the ActionButton.Action.Play enum member.
-                cursor.GotoNext(MoveType.Before, i => i.MatchLdarg(arg_self) && i.Next.MatchLdcI4(1));
+                // Move to the instruction after the end of the second finally block, to add behavior just after the 'add creatures to menu' foreach loop.
+                cursor.Prev = il.Body.ExceptionHandlers[1].HandlerEnd;
 
                 // Call `InsertCreatures` with `this` and `ref counter`
-                cursor.Emit(load_self);
-                cursor.Emit(OpCodes.Ldloca_S, il.Body.Variables[loc_counter]);
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldloca_S, il.Body.Variables[0]);
                 cursor.EmitDelegate<InsertSandboxDelegate>(InsertCreatures);
             } catch (Exception e) {
                 Debug.LogException(e);
@@ -65,13 +60,11 @@ namespace Fisobs.Sandbox
                         GrowEditorSelector(self);
                     }
 
-                    Button button;
                     if (self.unlocks.SandboxItemUnlocked(unlock.Type)) {
-                        button = new CreatureOrItemButton(self.menu, self, new(common.Type.CritType, common.Type.ObjectType, unlock.Data));
+                        self.AddButton(new CreatureOrItemButton(self.menu, self, new(common.Type.CritType, common.Type.ObjectType, unlock.Data)), ref counter);
                     } else {
-                        button = new LockedButton(self.menu, self);
+                        self.AddButton(new LockedButton(self.menu, self), ref counter);
                     }
-                    self.AddButton(button, ref counter);
                 }
             }
         }
