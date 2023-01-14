@@ -38,10 +38,10 @@ namespace Fisobs.Creatures
 
         /// <summary>Gets a new instance of <see cref="CreatureState"/> for <paramref name="acrit"/>. If spawned by a sandbox unlock, the <c>SandboxData</c> section of the creature's state will equal that unlock's <see cref="SandboxUnlock.Data"/> value.</summary>
         /// <remarks>The default implementation of this method returns a <see cref="HealthState"/>.</remarks>
-        public virtual CreatureState GetState(AbstractCreature acrit) => new HealthState(acrit);
+        public virtual CreatureState CreateState(AbstractCreature acrit) => new HealthState(acrit);
         /// <summary>Gets a new instance of <see cref="AbstractCreatureAI"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then null will default to a simple <see cref="AbstractCreatureAI"/>. If false, then this method is not called in the first place.</remarks>
-        public virtual AbstractCreatureAI? GetAbstractAI(AbstractCreature acrit) => null;
+        public virtual AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => null;
         /// <summary>Perform arbitrary work after the <see cref="AbstractCreature(World, CreatureTemplate, Creature, WorldCoordinate, EntityID)"/> constructor runs.</summary>
         public virtual void Init(AbstractCreature acrit, World world, WorldCoordinate pos, EntityID id) { }
         /// <summary>Determines if being grasped by this creature should paralyze the player.</summary>
@@ -62,11 +62,11 @@ namespace Fisobs.Creatures
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>
-        public abstract ArtificialIntelligence? GetRealizedAI(AbstractCreature acrit);
+        public abstract ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit);
         /// <summary>Gets a new instance of <see cref="Creature"/> from an abstract creature.</summary>
-        public abstract Creature GetRealizedCreature(AbstractCreature acrit);
+        public abstract Creature CreateRealizedCreature(AbstractCreature acrit);
         /// <summary>Establishes creature templates for this critob. The <see cref="CreatureFormula"/> type is recommended for this.</summary>
-        public abstract CreatureTemplate GetTemplate();
+        public abstract CreatureTemplate CreateTemplate();
         /// <summary>Establishes relationships between creatures. The <see cref="Relationships"/> type is recommended for this.</summary>
         public abstract void EstablishRelationships();
 

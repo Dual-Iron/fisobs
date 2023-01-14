@@ -78,7 +78,7 @@ namespace Fisobs.Creatures
             // --- Generate new critob templates ---
 
             foreach (Critob critob in critobs.Values) {
-                var template = critob.GetTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
+                var template = critob.CreateTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
                 if (template.type != critob.Type) {
                     throw new InvalidOperationException($"Critob \"{critob.Type}\" returned a template with an incorrect `type` field.");
                 }
@@ -189,8 +189,8 @@ namespace Fisobs.Creatures
 
             if (critobs.TryGetValue(self.creatureTemplate.type, out var crit)) {
                 if (self.abstractAI != null && self.creatureTemplate.AI) {
-                    self.abstractAI.RealAI = crit.GetRealizedAI(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedAI returned null but template.AI was true!");
-                } else if (!self.creatureTemplate.AI && crit.GetRealizedAI(self) != null) {
+                    self.abstractAI.RealAI = crit.CreateRealizedAI(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedAI returned null but template.AI was true!");
+                } else if (!self.creatureTemplate.AI && crit.CreateRealizedAI(self) != null) {
                     Debug.LogError($"{crit.GetType()}::GetRealizedAI returned a non-null object but template.AI was false!");
                 }
             }
@@ -199,7 +199,7 @@ namespace Fisobs.Creatures
         private void Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
         {
             if (self.realizedCreature == null && critobs.TryGetValue(self.creatureTemplate.type, out var crit)) {
-                self.realizedObject = crit.GetRealizedCreature(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedCreature returned null!");
+                self.realizedObject = crit.CreateRealizedCreature(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedCreature returned null!");
 
                 self.InitiateAI();
 
@@ -222,10 +222,10 @@ namespace Fisobs.Creatures
 
             if (critobs.TryGetValue(template.type, out var critob)) {
                 // Set creature state
-                self.state = critob.GetState(self);
+                self.state = critob.CreateState(self);
 
                 // Set creature AI
-                AbstractCreatureAI? abstractAI = critob.GetAbstractAI(self);
+                AbstractCreatureAI? abstractAI = critob.CreateAbstractAI(self);
 
                 if (template.AI && abstractAI != null) {
                     self.abstractAI = abstractAI;

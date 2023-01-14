@@ -17,7 +17,7 @@ namespace Mosquitoes
             RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
         }
 
-        public override CreatureTemplate GetTemplate()
+        public override CreatureTemplate CreateTemplate()
         {
             // CreatureFormula does most of the ugly work for you when creating a new CreatureTemplate,
             // but you can construct a CreatureTemplate manually if you need to.
@@ -115,12 +115,12 @@ namespace Mosquitoes
             self.Fears(CreatureType.SpitterSpider, 0.6f);
         }
 
-        public override ArtificialIntelligence GetRealizedAI(AbstractCreature acrit)
+        public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit)
         {
             return new MosquitoAI(acrit, (Mosquito)acrit.realizedCreature);
         }
 
-        public override Creature GetRealizedCreature(AbstractCreature acrit)
+        public override Creature CreateRealizedCreature(AbstractCreature acrit)
         {
             return new Mosquito(acrit);
         }

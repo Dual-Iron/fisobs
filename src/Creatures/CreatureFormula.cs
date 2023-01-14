@@ -38,7 +38,7 @@ namespace Fisobs.Creatures
         public AttackResist StunResistances;
         /// <summary>How much damage the creature can take before instantly dying.</summary>
         public float InstantDeathDamage = float.MaxValue;
-        /// <summary>True if the creature has AI. If this is true, then <see cref="Critob.GetRealizedAI(AbstractCreature)"/> must return a non-null value.</summary>
+        /// <summary>True if the creature has AI. If this is true, then <see cref="Critob.CreateRealizedAI(AbstractCreature)"/> must return a non-null value.</summary>
         public bool HasAI;
         /// <summary>The default relationship this creature has with other unknown creature types.</summary>
         public CreatureTemplate.Relationship DefaultRelationship = new(CreatureTemplate.Relationship.Type.Ignores, 0f);
