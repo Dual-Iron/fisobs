@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="../../lib/stubbed.*.dll" />
+    <ProjectReference Include="../../src/Fisobs.csproj" />
+
+    <!--Critobs will autoload the embedded resource named `icon_{CritobType}`-->
+    <EmbeddedResource Include="../../assets/icon_Mosquito.png">
+      <LogicalName>%(Filename)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

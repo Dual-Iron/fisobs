@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="../../lib/stubbed.*.dll" />
+    <ProjectReference Include="../../src/Fisobs.csproj" />
+
+    <!--Fisobs will autoload the embedded resource named `icon_{FisobType}`-->
+    <EmbeddedResource Include="../../assets/icon_CentiShield.png">
+      <LogicalName>%(Filename)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

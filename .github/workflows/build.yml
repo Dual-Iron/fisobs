@@ -1,0 +1,36 @@
+name: Build Fisobs
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build .NET assemblies
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@v2
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+    - name: Build files
+      run: dotnet publish -c "Release" -o "output"
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        path: |
+          output/Fisobs.dll
+          output/Fisobs.xml
+          output/CentiShields.dll
+          output/Mosquitoes.dll
+    - name: Upload release
+      if: startsWith(github.ref, 'refs/tags/v' )
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: false
+        files: |
+          output/Fisobs.dll
+          output/Fisobs.xml
+          output/CentiShields.dll
+          output/Mosquitoes.dll
