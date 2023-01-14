@@ -6,30 +6,21 @@ jobs:
   build:
     name: Build .NET assemblies
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
     - name: Check out repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Set up .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'
-    - name: Build files
-      run: dotnet publish -c "Release" -o "output"
+        dotnet-version: '7.0.x'
+    - name: Build solution
+      run: dotnet publish src -c Release -o output
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         path: |
-          output/Fisobs.dll
-          output/Fisobs.xml
-          output/CentiShields.dll
-          output/Mosquitoes.dll
-    - name: Upload release
-      if: startsWith(github.ref, 'refs/tags/v' )
-      uses: "marvinpinto/action-automatic-releases@latest"
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        prerelease: false
-        files: |
           output/Fisobs.dll
           output/Fisobs.xml
           output/CentiShields.dll
