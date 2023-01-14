@@ -36,6 +36,7 @@ namespace Fisobs.Creatures
             On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
             On.RainWorld.LoadResources += LoadResources;
 
+            On.Player.CanEatMeat += Player_CanEatMeat;
             On.Player.Grabbed += PlayerGrabbed;
             On.AbstractCreature.Realize += Realize;
             On.AbstractCreature.InitiateAI += InitiateAI;
@@ -154,13 +155,30 @@ namespace Fisobs.Creatures
             }
         }
 
+        private bool Player_CanEatMeat(On.Player.orig_CanEatMeat orig, Player self, Creature crit)
+        {
+            bool ret = orig(self, crit);
+            if (critobs.TryGetValue(crit.abstractCreature.creatureTemplate.type, out var critob)) {
+                critob.CorpseIsEdible(self, crit, ref ret);
+            }
+            return ret;
+        }
+
         private void PlayerGrabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp g)
         {
             orig(self, g);
 
-            if (g?.grabber?.abstractCreature != null && critobs.TryGetValue(g.grabber.abstractCreature.creatureTemplate.type, out var critob) && critob.GraspParalyzesPlayer(g)) {
+            bool paralyzing = self.dangerGrasp != null;
+
+            if (g?.grabber?.abstractCreature != null && critobs.TryGetValue(g.grabber.abstractCreature.creatureTemplate.type, out var critob)) {
+                critob.GraspParalyzesPlayer(g, ref paralyzing);
+            }
+
+            if (paralyzing) {
                 self.dangerGraspTime = 0;
                 self.dangerGrasp = g;
+            } else {
+                self.dangerGrasp = null;
             }
         }
 
@@ -230,7 +248,7 @@ namespace Fisobs.Creatures
         {
             var ret = orig(creature);
             if (critobs.TryGetValue(GetCreatureTemplate(creature).type, out var critob)) {
-                critob.KillsMatter(creature, ref ret);
+                critob.KillsMatter(ref ret);
             }
             return ret;
         }
@@ -238,7 +256,7 @@ namespace Fisobs.Creatures
         private CreatureType? ArenaFallback(On.MultiplayerUnlocks.orig_FallBackCrit orig, CreatureType type)
         {
             if (critobs.TryGetValue(GetCreatureTemplate(type).type, out var critob)) {
-                return critob.ArenaFallback(type);
+                return critob.ArenaFallback();
             }
             return orig(type);
         }

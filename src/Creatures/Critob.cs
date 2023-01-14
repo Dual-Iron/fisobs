@@ -45,12 +45,14 @@ namespace Fisobs.Creatures
         /// <summary>Perform arbitrary work after the <see cref="AbstractCreature(World, CreatureTemplate, Creature, WorldCoordinate, EntityID)"/> constructor runs.</summary>
         public virtual void Init(AbstractCreature acrit, World world, WorldCoordinate pos, EntityID id) { }
         /// <summary>Determines if being grasped by this creature should paralyze the player.</summary>
-        public virtual bool GraspParalyzesPlayer(Creature.Grasp grasp) => false;
-        /// <summary>Determines if <paramref name="type"/> should be displayed when listing kills in arena and hunter modes.</summary>
-        public virtual void KillsMatter(CreatureType type, ref bool killsMatter) { }
+        public virtual void GraspParalyzesPlayer(Creature.Grasp grasp, ref bool paralyzing) { }
+        /// <summary>Determines if a creature's corpse is edible by the given player.</summary>
+        public virtual void CorpseIsEdible(Player player, Creature crit, ref bool canEatMeat) { }
+        /// <summary>Determines if the creature should be displayed when listing kills in arena and hunter modes.</summary>
+        public virtual void KillsMatter(ref bool killsMatter) { }
         /// <summary>If this creature would be spawned in arena mode but isn't unlocked yet, the creature returned by this method is spawned instead.</summary>
         /// <returns>The creature to spawn, or <see langword="null"/> to spawn nothing.</returns>
-        public virtual CreatureType? ArenaFallback(CreatureType type) => null;
+        public virtual CreatureType? ArenaFallback() => null;
         /// <summary>Gets the custom properties of a creature.</summary>
         /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
         public virtual ItemProperties? Properties(Creature crit) => null;
