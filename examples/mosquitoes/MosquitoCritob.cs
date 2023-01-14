@@ -15,7 +15,7 @@ namespace Mosquitoes
 
         public MosquitoCritob() : base(Mosquito)
         {
-            RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
+            RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
         }
 
         public override CreatureTemplate GetTemplate()

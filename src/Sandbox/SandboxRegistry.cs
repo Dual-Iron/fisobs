@@ -38,7 +38,6 @@ namespace Fisobs.Sandbox
             On.MultiplayerUnlocks.ParentSandboxID += GetParent;
             On.MultiplayerUnlocks.TiedSandboxIDs += TiedSandboxIDs;
             On.PlayerProgression.MiscProgressionData.GetTokenCollected_SandboxUnlockID += GetCollected;
-            On.PlayerProgression.MiscProgressionData.SetTokenCollected_SandboxUnlockID += SetCollected;
 
             // Creatures
             On.Menu.SandboxSettingsInterface.DefaultKillScores += DefaultKillScores;

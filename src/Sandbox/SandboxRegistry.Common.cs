@@ -4,7 +4,6 @@ using System;
 using ArenaBehaviors;
 using System.Linq;
 using Fisobs.Core;
-using Fisobs.Saves;
 using System.Collections.Generic;
 
 namespace Fisobs.Sandbox
@@ -123,22 +122,6 @@ namespace Fisobs.Sandbox
         private bool GetCollected(On.PlayerProgression.MiscProgressionData.orig_GetTokenCollected_SandboxUnlockID orig, MiscProgressionData self, MultiplayerUnlocks.SandboxUnlockID unlockID)
         {
             if (unlockID == MultiplayerUnlocks.SandboxUnlockID.Slugcat) {
-                return true;
-            }
-            if (sboxes.Values.Any(sbox => sbox.SandboxUnlocks.Any(u => u.Type == unlockID))) {
-                return FisobSave.CurrentSlot.Unlocked.Contains(unlockID.ToString());
-            }
-            return orig(self, unlockID);
-        }
-
-        private bool SetCollected(On.PlayerProgression.MiscProgressionData.orig_SetTokenCollected_SandboxUnlockID orig, MiscProgressionData self, MultiplayerUnlocks.SandboxUnlockID unlockID)
-        {
-            if (sboxes.Values.Any(sbox => sbox.SandboxUnlocks.Any(u => u.Type == unlockID))) {
-                bool alreadySet = FisobSave.CurrentSlot.Unlocked.Contains(unlockID.ToString());
-                if (alreadySet) {
-                    return false;
-                }
-                FisobSave.Unlock(unlockID.ToString());
                 return true;
             }
             return orig(self, unlockID);
