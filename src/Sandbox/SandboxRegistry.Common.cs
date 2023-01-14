@@ -61,24 +61,20 @@ namespace Fisobs.Sandbox
                     Debug.LogError($"The sandbox unlock \"{unlock.Type}\" returned null when being parsed in sandbox mode.");
                 }
             } catch (Exception e) {
-                Debug.LogException(e);
                 Debug.LogError($"The sandbox unlock \"{unlock.Type}\" threw an exception when being parsed in sandbox mode.");
+                Debug.LogException(e);
             }
         }
 
         private IconSymbol.IconSymbolData FromUnlock(On.MultiplayerUnlocks.orig_SymbolDataForSandboxUnlock orig, MultiplayerUnlocks.SandboxUnlockID unlockID)
         {
-            try {
-                return orig(unlockID);
-            } catch {
-                foreach (var common in sboxes.Values) {
-                    var unlock = common.SandboxUnlocks.FirstOrDefault(u => u.Type == unlockID);
-                    if (unlock.IsInitialized) {
-                        return new(common.Type.CritType, common.Type.ObjectType, unlock.Data);
-                    }
+            foreach (var common in sboxes.Values) {
+                var unlock = common.SandboxUnlocks.FirstOrDefault(u => u.Type == unlockID);
+                if (unlock.IsInitialized) {
+                    return new(common.Type.CritType, common.Type.ObjectType, unlock.Data);
                 }
-                throw;
             }
+            return orig(unlockID);
         }
 
         private MultiplayerUnlocks.SandboxUnlockID FromSymbolData(On.MultiplayerUnlocks.orig_SandboxUnlockForSymbolData orig, IconSymbol.IconSymbolData data)

@@ -20,6 +20,13 @@ namespace Fisobs.Creatures
         /// </summary>
         protected Critob(CreatureType type)
         {
+            if ((int)type <= 0) {
+                ArgumentException e = new($"The {GetType().Name} fisob's enum value ({(int)type}) was invalid.", nameof(type));
+                Debug.LogException(e);
+                Console.WriteLine(e);
+                throw e;
+            }
+
             Type = type;
         }
 
@@ -97,9 +104,11 @@ namespace Fisobs.Creatures
         AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
         {
             string stateString = $"{data.CustomData}SandboxData<cC>{unlock.Data}<cB>";
-            EntitySaveData withSandboxData = new(data.Type, data.ID, data.Pos, stateString);
-            AbstractCreature crit = SaveState.AbstractCreatureFromString(world, withSandboxData.ToString(), false);
-            crit.pos = data.Pos;
+            AbstractCreature crit = new(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) {
+                pos = data.Pos
+            };
+            crit.state.LoadFromString(stateString.Split(new string[] { "<cB>" }, StringSplitOptions.RemoveEmptyEntries));
+            crit.setCustomFlags();
             return crit;
         }
     }

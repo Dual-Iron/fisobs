@@ -89,6 +89,7 @@ namespace Fisobs.Sandbox
             {
                 int rows = Rows;
 
+                // Fix position of creature scores
                 int i = -1;
                 foreach (ScoreController score in owner.scoreControllers.Where(s => s is SandboxSettingsInterface.KillScore or LockedScore)) {
                     i++;
@@ -114,6 +115,15 @@ namespace Fisobs.Sandbox
                     } else if (score.page.selectables.LastIndexOf(score.scoreDragger) == -1) {
                         score.page.selectables.Add(score.scoreDragger);
                     }
+                }
+
+                // Fix position of misc scores
+                float miscX = 266f;
+                float miscY = -180f;
+                foreach (ScoreController score in owner.scoreControllers.OfType<MiscScore>()) {
+                    score.pos.x = miscX;
+                    score.pos.y = miscY;
+                    miscY -= 30;
                 }
 
                 base.GrafUpdate(timeStacker);

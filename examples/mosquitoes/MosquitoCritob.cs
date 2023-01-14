@@ -10,12 +10,12 @@ namespace Mosquitoes
 {
     sealed class MosquitoCritob : Critob
     {
-        public static readonly CreatureType Mosquito = new("Mosquito");
-        public static readonly MultiplayerUnlocks.SandboxUnlockID MosquitoUnlock = new("MosquitoUnlock");
+        public static CreatureType Mosquito = null!;
+        public static readonly MultiplayerUnlocks.SandboxUnlockID MosquitoUnlock = new("MosquitoUnlock", true);
 
         public MosquitoCritob() : base(Mosquito)
         {
-            RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
+            RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
         }
 
         public override CreatureTemplate GetTemplate()

@@ -50,10 +50,10 @@ namespace Fisobs.Sandbox
 
             foreach (var common in selection) {
                 foreach (var unlock in common.SandboxUnlocks) {
-                    // Reserve slots for:
+                    // Reserve slots from end of box for:
                     int padding = creatures
-                        ? 8     // empty space (3) + randomize button (1) + config buttons (3) + play button (1)
-                        : 51    // all of the above (8) + creature unlocks (43)
+                        ? 6                              // empty space (1) + randomize button (1) + config buttons (3) + play button (1)
+                        : 49 + (ModManager.MSC ? 14 : 0) // all of the above (6) + vanilla creatures (43) + downpour creatures (14)
                         ;
 
                     if (counter >= Width * Height - padding) {

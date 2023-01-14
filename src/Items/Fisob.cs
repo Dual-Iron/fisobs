@@ -20,11 +20,8 @@ namespace Fisobs.Items
         /// </summary>
         protected Fisob(ObjectType type)
         {
-            int typeIndex = (int)type;
-            if (typeIndex >= 0 && typeIndex <= (int)ObjectType.BlinkingFlower) {
-                string vanilla = ObjectType.values.GetEntry(typeIndex);
-
-                ArgumentException e = new($"The {GetType().Name} fisob's enum value ({type} = {typeIndex}) was that of a vanilla object ({vanilla} = {typeIndex}).", nameof(type));
+            if ((int)type <= 0) {
+                ArgumentException e = new($"The {GetType().Name} fisob's enum value ({(int)type}) was invalid.", nameof(type));
                 Debug.LogException(e);
                 Console.WriteLine(e);
                 throw e;

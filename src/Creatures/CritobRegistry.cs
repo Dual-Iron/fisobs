@@ -13,9 +13,7 @@ namespace Fisobs.Creatures
     /// </summary>
     public sealed class CritobRegistry : Registry
     {
-        private static readonly CreatureTemplate dummy = new(new CreatureType($"Unknown", register: false), null, new(), new(), default) {
-            name = "Unregistered HyperCam 2"
-        };
+        private static CreatureTemplate? dummy;
 
         /// <summary>
         /// The singleton instance of this class.
@@ -35,7 +33,7 @@ namespace Fisobs.Creatures
         /// <inheritdoc/>
         protected override void Initialize()
         {
-            On.RainWorld.Start += ApplyCritobs;
+            On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
             On.RainWorld.LoadResources += LoadResources;
 
             On.Player.Grabbed += PlayerGrabbed;
@@ -48,6 +46,26 @@ namespace Fisobs.Creatures
             On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
             On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
             On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
+        }
+
+        private void StaticWorld_InitStaticWorld(On.StaticWorld.orig_InitStaticWorld orig)
+        {
+            // Adjust critobs' enum indices
+            foreach (var critob in critobs.Values) {
+                critob.Type.Unregister();
+            }
+            foreach (var critob in critobs.Values) {
+                CreatureType.values.AddEntry(critob.Type.value);
+            }
+
+            orig();
+            try {
+                ApplyCritobs();
+            } catch (Exception e) {
+                Debug.LogException(e);
+                Debug.LogError($"An exception was thrown in {nameof(Fisobs)}.{nameof(Creatures)}::{nameof(ApplyCritobs)} with details logged.");
+                throw;
+            }
         }
 
         private void ApplyCritobs()
@@ -80,16 +98,16 @@ namespace Fisobs.Creatures
                 Array.Resize(ref creatureTemplates, maxType + 1);
 
                 for (int i = oldLen; i < maxType + 1; i++) {
+                    dummy ??= new(new CreatureType($"Unknown", register: false), null, new(), new(), default) {
+                        name = "Unregistered HyperCam 2"
+                    };
+
                     creatureTemplates[i] = dummy;
                 }
             }
 
             // Add the templates to their respective arrays in StaticWorld
             foreach (CreatureTemplate newTemplate in newTemplates) {
-                // Make sure we're not overwriting vanilla or causing index-out-of-bound errors
-                if ((int)newTemplate.type <= 45) {
-                    throw new InvalidOperationException($"The CreatureTemplate.Type value {newTemplate.type} ({(int)newTemplate.type}) must be greater than 45 to not overwrite vanilla.");
-                }
                 if ((int)newTemplate.type >= creatureTemplates.Length) {
                     throw new InvalidOperationException(
                         $"The CreatureTemplate.Type value {newTemplate.type} ({(int)newTemplate.type}) must be less than StaticWorld.creatureTemplates.Length ({creatureTemplates.Length}).");
@@ -123,18 +141,6 @@ namespace Fisobs.Creatures
             // Establish specific relationships
             foreach (Critob critob in critobs.Values) {
                 critob.EstablishRelationships();
-            }
-        }
-
-        private void ApplyCritobs(On.RainWorld.orig_Start orig, RainWorld self)
-        {
-            orig(self);
-            try {
-                ApplyCritobs();
-            } catch (Exception e) {
-                Debug.LogException(e);
-                Debug.LogError($"An exception was thrown in {nameof(Fisobs)}.{nameof(Creatures)}::{nameof(ApplyCritobs)} with details logged.");
-                throw;
             }
         }
 

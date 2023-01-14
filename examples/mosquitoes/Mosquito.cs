@@ -51,7 +51,7 @@ namespace Mosquitoes
 
         public override Color ShortCutColor()
         {
-            return new Color(.7f, .4f, .7f);
+            return new Color(.7f, .4f, .4f);
         }
 
         public override void InitiateGraphicsModule()

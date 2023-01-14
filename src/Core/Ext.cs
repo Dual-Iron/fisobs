@@ -69,7 +69,7 @@ namespace Fisobs.Core
         /// <exception cref="ArgumentException">Thrown when <paramref name="customData"/> contains &lt; characters.</exception>
         public static string SaveToString(this AbstractPhysicalObject apo, string customData = "")
         {
-            return EntitySaveData.CreateFrom(apo, customData).ToString();
+            return EntitySaveData.CreateFrom(apo, customData).ToString(apo.world);
         }
 
         /// <summary>
