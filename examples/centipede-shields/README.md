@@ -7,4 +7,4 @@ CentiShields is a BepInEx plugin for Rain World.
 - Red centipedes will drop shields that are larger, more numerous, and more durable than those of orange centipedes.
 - For sandbox mode, orange shields are unlocked when adult orange centipedes are unlocked, and red shields are unlocked when red centipedes are unlocked.
 
-If you're using Realm, you can install via the browser. Otherwise, download `CentiShields.dll` and `Fisobs.dll` from [here](https://github.com/Dual-Iron/fisob-api/releases/latest). You'll need EnumExtender installed too.
+If you're using Realm, you can install via the browser. Otherwise, download `CentiShields.dll` and `Fisobs.dll` from [here](https://github.com/Dual-Iron/fisobs/releases/latest).

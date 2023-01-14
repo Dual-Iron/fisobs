@@ -12,8 +12,3 @@ The `mosquitoes` project contains an example critob. Critobs are analogous to fi
 - One `GraphicsModule` class (MosquitoGraphics.cs) if you use `Creature.InitiateGraphicsModule()`
 
 Note that critobs are designed for creating **unique** creatures. Custom lizards, vultures, cicadas, etc are beyond a critob's scope. That is likely to come in the future though!
-
-# [ElectricSpear](https://github.com/LeeMoriya/ElectricSpear) by LeeMoriya
-An updated version of Shiro_PB's original Electric Spear mod that works with BepInEx. Electric Spears are a spear-like weapon that can hold three charges. They recharge when they hit a centipede and discharge when they hit any other creature.
-
-Note as of March 24, 2022: ElectricSpear uses Fisobs v1, so you may not see some parts of Fisobs v2 in there.
