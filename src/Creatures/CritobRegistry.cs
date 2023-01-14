@@ -59,6 +59,7 @@ namespace Fisobs.Creatures
             }
 
             orig();
+
             try {
                 ApplyCritobs();
             } catch (Exception e) {

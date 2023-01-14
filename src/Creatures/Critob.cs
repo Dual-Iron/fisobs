@@ -51,8 +51,9 @@ namespace Fisobs.Creatures
         /// <summary>If this creature would be spawned in arena mode but isn't unlocked yet, the creature returned by this method is spawned instead.</summary>
         /// <returns>The creature to spawn, or <see langword="null"/> to spawn nothing.</returns>
         public virtual CreatureType? ArenaFallback(CreatureType type) => null;
-        /// <inheritdoc/>
-        public virtual ItemProperties? Properties(PhysicalObject forObject) => null;
+        /// <summary>Gets the custom properties of a creature.</summary>
+        /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
+        public virtual ItemProperties? Properties(Creature crit) => null;
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>
@@ -99,6 +100,11 @@ namespace Fisobs.Creatures
             yield return CritobRegistry.Instance;
             yield return PropertyRegistry.Instance;
             yield return SandboxRegistry.Instance;
+        }
+
+        ItemProperties? IPropertyHandler.Properties(PhysicalObject forObject)
+        {
+            return forObject is Creature crit ? Properties(crit) : null;
         }
 
         AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)

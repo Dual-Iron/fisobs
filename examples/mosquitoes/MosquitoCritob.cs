@@ -126,11 +126,11 @@ namespace Mosquitoes
             return new Mosquito(acrit);
         }
 
-        public override ItemProperties? Properties(PhysicalObject forObject)
+        public override ItemProperties? Properties(Creature crit)
         {
             // If you don't need the `forObject` parameter, store one ItemProperties instance as a static object and return that.
             // The CentiShields example demonstrates this.
-            if (forObject is Mosquito mosquito) {
+            if (crit is Mosquito mosquito) {
                 return new MosquitoProperties(mosquito);
             }
 
