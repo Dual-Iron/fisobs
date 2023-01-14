@@ -50,7 +50,7 @@ namespace Fisobs.Items
         private IconSymbol.IconSymbolData? ItemSymbol_SymbolDataFromItem(On.ItemSymbol.orig_SymbolDataFromItem orig, AbstractPhysicalObject item)
         {
             if (fisobs.TryGetValue(item.type, out var fisob)) {
-                return new IconSymbol.IconSymbolData(0, item.type, fisob.Icon.Data(item));
+                return new IconSymbol.IconSymbolData(CreatureTemplate.Type.StandardGroundCreature, item.type, fisob.Icon.Data(item));
             }
             return orig(item);
         }

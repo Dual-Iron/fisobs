@@ -5,9 +5,6 @@ using UnityEngine;
 
 namespace CentiShields
 {
-    // ⚠ It's important that you add this BepInDependency attribute:
-
-    [BepInDependency("github.notfood.BepInExPartialityWrapper", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin("org.dual.centishields", nameof(CentiShields), "0.1.0")]
     sealed class Plugin : BaseUnityPlugin
     {

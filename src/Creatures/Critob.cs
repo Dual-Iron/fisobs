@@ -8,23 +8,6 @@ using CreatureType = CreatureTemplate.Type;
 
 namespace Fisobs.Creatures
 {
-    /// <summary>Represents the "metadata" for a custom creature.</summary>
-    public abstract class Critob2 : Critob
-    {
-        /// <summary>Creates a new <see cref="Critob"/> instance for the given <paramref name="type"/>.</summary>
-        protected Critob2(CreatureType type) : base(type, internalOverload: true)
-        { }
-
-        /// <summary>Obsolete. Call <see cref="CreateTemplate"/> instead.</summary>
-        public sealed override IEnumerable<CreatureTemplate> GetTemplates()
-        {
-            yield return CreateTemplate();
-        }
-
-        /// <summary>Establishes the creature template for this critob. The <see cref="CreatureFormula"/> type is recommended for this.</summary>
-        public abstract CreatureTemplate CreateTemplate();
-    }
-
     /// <summary>
     /// Represents the "metadata" for a custom creature.
     /// </summary>
@@ -32,26 +15,13 @@ namespace Fisobs.Creatures
     {
         private readonly List<SandboxUnlock> sandboxUnlocks = new();
 
-#pragma warning disable IDE0060 // Remove unused parameter
-        internal Critob(CreatureType type, bool internalOverload)
-        {
-            if (type == 0) {
-                ArgumentException e = new($"The {GetType().Name} critob's enum value was zero. Did the developer forget to add a BepInDependency attribute to their plugin class?", nameof(type));
-                Debug.LogException(e);
-                Console.WriteLine(e);
-                throw e;
-            }
-
-            Type = type;
-        }
-#pragma warning restore IDE0060 // Remove unused parameter
-
         /// <summary>
         /// Creates a new <see cref="Critob"/> instance for the given <paramref name="type"/>.
         /// </summary>
-        [Obsolete("Do not extend Critob. Extend Critob2 instead.", error: false)]
-        protected Critob(CreatureType type) : this(type, internalOverload: true)
-        { }
+        protected Critob(CreatureType type)
+        {
+            Type = type;
+        }
 
         /// <summary>The critob's type.</summary>
         public CreatureType Type { get; }
@@ -83,17 +53,17 @@ namespace Fisobs.Creatures
         /// <summary>Gets a new instance of <see cref="Creature"/> from an abstract creature.</summary>
         public abstract Creature GetRealizedCreature(AbstractCreature acrit);
         /// <summary>Establishes creature templates for this critob. The <see cref="CreatureFormula"/> type is recommended for this.</summary>
-        public abstract IEnumerable<CreatureTemplate> GetTemplates();
+        public abstract CreatureTemplate GetTemplate();
         /// <summary>Establishes relationships between creatures. The <see cref="Relationships"/> type is recommended for this.</summary>
         public abstract void EstablishRelationships();
 
         /// <summary>
-        /// Used to load <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites. The <see cref="Ext.LoadAtlasFromEmbRes(System.Reflection.Assembly, string)"/> is recommended for this.
+        /// Used to load <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites.
         /// </summary>
         /// <param name="rainWorld">The current <see cref="RainWorld"/> instance.</param>
         public virtual void LoadResources(RainWorld rainWorld)
         {
-            string iconName = Ext.LoadAtlasFromEmbRes(GetType().Assembly, $"icon_{Type}")?.name ?? "Futile_White";
+            string iconName = Ext.LoadIconAtlas(Type.value)?.name ?? "Futile_White";
 
             if (Icon is DefaultIcon) {
                 Icon = new SimpleIcon(iconName, Ext.MenuGrey);

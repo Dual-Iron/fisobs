@@ -35,11 +35,11 @@ namespace Mosquitoes
         {
             mos = mosquito;
 
-            int seed = Random.seed;
-            Random.seed = mosquito.abstractCreature.ID.RandomSeed;
+            var state = Random.state;
+            Random.InitState(mosquito.abstractCreature.ID.RandomSeed);
             sizeFac = Custom.ClampedRandomVariation(0.8f, 0.2f, 0.5f);
             body = new Vector2[2, 3];
-            Random.seed = seed;
+            Random.state = state;
         }
 
         public override void Reset()

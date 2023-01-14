@@ -8,15 +8,15 @@
         /// <summary>
         /// If the object is an item, this is its type.
         /// </summary>
-        public readonly AbstractPhysicalObject.AbstractObjectType ObjectType { get; }
+        public readonly AbstractPhysicalObject.AbstractObjectType? ObjectType { get; }
         /// <summary>
         /// If the object is a creature, this is its type.
         /// </summary>
-        public readonly CreatureTemplate.Type CritType { get; }
+        public readonly CreatureTemplate.Type? CritType { get; }
         /// <summary>
         /// True if the object is a creature.
         /// </summary>
-        public readonly bool IsCrit => CritType != 0;
+        public readonly bool IsCrit => CritType != null;
 
         /// <summary>
         /// Creates a new <see cref="PhysobType"/> that represents an object type.
@@ -48,15 +48,15 @@
         public override int GetHashCode()
         {
             int hashCode = 1756035919;
-            hashCode = hashCode * -1521134295 + ObjectType.GetHashCode();
-            hashCode = hashCode * -1521134295 + CritType.GetHashCode();
+            hashCode = hashCode * -1521134295 + ObjectType?.GetHashCode() ?? 0;
+            hashCode = hashCode * -1521134295 + CritType?.GetHashCode() ?? 0;
             return hashCode;
         }
 
         /// <inheritdoc/>
         public override readonly string? ToString()
         {
-            return IsCrit ? CritType.ToString() : ObjectType.ToString();
+            return IsCrit ? CritType!.ToString() : ObjectType!.ToString();
         }
 
         /// <summary>

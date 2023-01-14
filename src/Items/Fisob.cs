@@ -20,8 +20,11 @@ namespace Fisobs.Items
         /// </summary>
         protected Fisob(ObjectType type)
         {
-            if (type == 0) {
-                ArgumentException e = new($"The {GetType().Name} fisob's enum value was zero. Did you forget to add a BepInDependency attribute to your plugin class?", nameof(type));
+            int typeIndex = (int)type;
+            if (typeIndex >= 0 && typeIndex <= (int)ObjectType.BlinkingFlower) {
+                string vanilla = ObjectType.values.GetEntry(typeIndex);
+
+                ArgumentException e = new($"The {GetType().Name} fisob's enum value ({type} = {typeIndex}) was that of a vanilla object ({vanilla} = {typeIndex}).", nameof(type));
                 Debug.LogException(e);
                 Console.WriteLine(e);
                 throw e;
@@ -48,12 +51,12 @@ namespace Fisobs.Items
         public virtual ItemProperties? Properties(PhysicalObject forObject) => null;
         
         /// <summary>
-        /// Loads <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites. The <see cref="Ext.LoadAtlasFromEmbRes(System.Reflection.Assembly, string)"/> is recommended for this.
+        /// Loads <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites.
         /// </summary>
         /// <param name="rainWorld">The current <see cref="RainWorld"/> instance.</param>
         public virtual void LoadResources(RainWorld rainWorld)
         {
-            string iconName = Ext.LoadAtlasFromEmbRes(GetType().Assembly, $"icon_{Type}")?.name ?? "Futile_White";
+            string iconName = Ext.LoadIconAtlas(Type.value)?.name ?? "Futile_White";
 
             if (Icon is DefaultIcon) {
                 Icon = new SimpleIcon(iconName, Ext.MenuGrey);

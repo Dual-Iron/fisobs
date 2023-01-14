@@ -17,13 +17,13 @@ namespace Fisobs.Properties
             return ret;
         }
 
-        private int Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
+        private Player.ObjectGrabability Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
         {
-            Player.ObjectGrabability ret = (Player.ObjectGrabability)orig(self, obj);
+            Player.ObjectGrabability ret = orig(self, obj);
 
             P(obj)?.Grabability(self, ref ret);
 
-            return (int)ret;
+            return ret;
         }
 
         private bool ScavengerAI_RealWeapon(On.ScavengerAI.orig_RealWeapon orig, ScavengerAI self, PhysicalObject obj)

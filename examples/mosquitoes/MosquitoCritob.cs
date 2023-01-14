@@ -7,14 +7,17 @@ using Fisobs.Sandbox;
 
 namespace Mosquitoes
 {
-    sealed class MosquitoCritob : Critob2
+    sealed class MosquitoCritob : Critob
     {
-        public MosquitoCritob() : base(EnumExt_Mosquito.Mosquito)
+        public static readonly CreatureType Mosquito = new("Mosquito");
+        public static readonly MultiplayerUnlocks.SandboxUnlockID MosquitoUnlock = new("MosquitoUnlock");
+
+        public MosquitoCritob() : base(Mosquito)
         {
-            RegisterUnlock(KillScore.Configurable(defaultScore: 3), EnumExt_Mosquito.MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
+            RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
         }
 
-        public override CreatureTemplate CreateTemplate()
+        public override CreatureTemplate GetTemplate()
         {
             // CreatureFormula does most of the ugly work for you when creating a new CreatureTemplate,
             // but you can construct a CreatureTemplate manually if you need to.
@@ -83,7 +86,7 @@ namespace Mosquitoes
         {
             // You can use StaticWorld.EstablishRelationship, but the Relationships class exists to make this process more ergonomic.
 
-            Relationships self = new(EnumExt_Mosquito.Mosquito);
+            Relationships self = new(Mosquito);
 
             foreach (var template in StaticWorld.creatureTemplates) {
                 if (template.quantified) {
@@ -92,7 +95,7 @@ namespace Mosquitoes
                 }
             }
 
-            self.IsInPack(EnumExt_Mosquito.Mosquito, 1f);
+            self.IsInPack(Mosquito, 1f);
 
             self.Eats(CreatureType.Slugcat, 0.4f);
             self.Eats(CreatureType.Scavenger, 0.6f);

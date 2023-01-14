@@ -1,19 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net35</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="../../lib/stubbed.*.dll" />
+    <Reference Include="../../lib/*.dll" />
     <ProjectReference Include="../../src/Fisobs.csproj" />
-
-    <!--Critobs will autoload the embedded resource named `icon_{CritobType}`-->
-    <EmbeddedResource Include="../../assets/icon_Mosquito.png">
-      <LogicalName>%(Filename)</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists('$(RainWorldDir)')">
+    <ItemGroup>
+      <Assets Include="$(ProjectDir)assets/**/*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Assets)" DestinationFiles="$(RainWorldDir)/RainWorld_Data/StreamingAssets/mods/$(ProjectName)/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RainWorldDir)/RainWorld_Data/StreamingAssets/mods/$(ProjectName)/plugins" />
+  </Target>
 
 </Project>

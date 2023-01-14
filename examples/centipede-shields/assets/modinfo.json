@@ -1,0 +1,10 @@
+﻿{
+  "id": "fisobs",
+  "name": "Fisobs",
+  "version": "3.0.0",
+  "authors": "Dual",
+  "description": "Simplifies adding new objects to Rain World.",
+  "requirements": [],
+  "requirements_names": [],
+  "checksum_override_version": false
+}

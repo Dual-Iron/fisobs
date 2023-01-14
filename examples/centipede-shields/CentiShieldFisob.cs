@@ -9,7 +9,11 @@ namespace CentiShields
 {
     sealed class CentiShieldFisob : Fisob
     {
-        public CentiShieldFisob() : base(EnumExt_CentiShields.CentiShield)
+        public static readonly AbstractPhysicalObject.AbstractObjectType CentiShield = new("CentiShield", true);
+        public static readonly MultiplayerUnlocks.SandboxUnlockID RedCentiShield = new("RedCentiShield", true);
+        public static readonly MultiplayerUnlocks.SandboxUnlockID OrangeCentiShield = new("OrangeCentiShield", true);
+
+        public CentiShieldFisob() : base(CentiShield)
         {
             // Fisobs auto-loads the `icon_CentiShield` embedded resource as a texture.
             // See `CentiShields.csproj` for how you can add embedded resources to your project.
@@ -17,8 +21,8 @@ namespace CentiShields
             // If you want a simple grayscale icon, you can omit the following line.
             Icon = new CentiShieldIcon();
 
-            RegisterUnlock(EnumExt_CentiShields.OrangeCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.BigCentipede, data: 70);
-            RegisterUnlock(EnumExt_CentiShields.RedCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.RedCentipede, data: 0);
+            RegisterUnlock(OrangeCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.BigCentipede, data: 70);
+            RegisterUnlock(RedCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.RedCentipede, data: 0);
         }
 
         public override AbstractPhysicalObject Parse(World world, EntitySaveData saveData, SandboxUnlock? unlock)

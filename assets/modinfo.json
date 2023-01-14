@@ -1,0 +1,10 @@
+﻿{
+  "id": "centipede-shields",
+  "name": "Centipede Shields",
+  "version": "1.0.0",
+  "authors": "Dual",
+  "description": "When a centipede's shell breaks off, it can become an item you can pick up and use as a shield.",
+  "requirements": [],
+  "requirements_names": [],
+  "checksum_override_version": false
+}

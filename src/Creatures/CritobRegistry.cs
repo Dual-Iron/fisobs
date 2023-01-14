@@ -13,6 +13,10 @@ namespace Fisobs.Creatures
     /// </summary>
     public sealed class CritobRegistry : Registry
     {
+        private static readonly CreatureTemplate dummy = new(new CreatureType($"Unknown", register: false), null, new(), new(), default) {
+            name = "Unregistered HyperCam 2"
+        };
+
         /// <summary>
         /// The singleton instance of this class.
         /// </summary>
@@ -53,24 +57,11 @@ namespace Fisobs.Creatures
             // --- Generate new critob templates ---
 
             foreach (Critob critob in critobs.Values) {
-                var templates = critob.GetTemplates()?.ToList() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplates().");
-
-                if (templates.Count > 1) {
-                    throw new InvalidOperationException($"Critob \"{critob.Type}\" returned more than one creature template.");
-                }
-                if (templates.Count == 0) {
-                    throw new InvalidOperationException($"Critob \"{critob.Type}\" returned no creature templates.");
-                }
-                if (templates.Contains(null!)) {
-                    throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null for its creature template.");
-                }
-
-                var template = templates[0];
+                var template = critob.GetTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
                 if (template.type != critob.Type) {
                     throw new InvalidOperationException($"Critob \"{critob.Type}\" returned a template with an incorrect `type` field.");
                 }
-
-                newTemplates.AddRange(templates);
+                newTemplates.Add(template);
             }
 
             // --- Add new critob templates ---
@@ -89,9 +80,7 @@ namespace Fisobs.Creatures
                 Array.Resize(ref creatureTemplates, maxType + 1);
 
                 for (int i = oldLen; i < maxType + 1; i++) {
-                    creatureTemplates[i] = new CreatureTemplate((CreatureType)i, null, new(), new(), default) {
-                        name = "Unregistered HyperCam 2"
-                    };
+                    creatureTemplates[i] = dummy;
                 }
             }
 
@@ -250,7 +239,7 @@ namespace Fisobs.Creatures
         private IconSymbol.IconSymbolData CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)
         {
             if (critobs.TryGetValue(creature.creatureTemplate.type, out var critob)) {
-                return new IconSymbol.IconSymbolData(creature.creatureTemplate.type, 0, critob.Icon.Data(creature));
+                return new IconSymbol.IconSymbolData(creature.creatureTemplate.type, AbstractPhysicalObject.AbstractObjectType.Creature, critob.Icon.Data(creature));
             }
             return orig(creature);
         }

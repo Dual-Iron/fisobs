@@ -1,0 +1,10 @@
+﻿{
+  "id": "mosquitoes",
+  "name": "Mosquitoes",
+  "version": "1.0.0",
+  "authors": "Dual and Ratrat",
+  "description": "An example creature added using Fisobs.",
+  "requirements": [],
+  "requirements_names": [],
+  "checksum_override_version": false
+}

@@ -5,7 +5,7 @@ namespace CentiShields
 {
     sealed class CentiShieldAbstract : AbstractPhysicalObject
     {
-        public CentiShieldAbstract(World world, WorldCoordinate pos, EntityID ID) : base(world, EnumExt_CentiShields.CentiShield, null, pos, ID)
+        public CentiShieldAbstract(World world, WorldCoordinate pos, EntityID ID) : base(world, CentiShieldFisob.CentiShield, null, pos, ID)
         {
             scaleX = 1;
             scaleY = 1;

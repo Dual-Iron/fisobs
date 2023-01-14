@@ -62,11 +62,9 @@ namespace Mosquitoes
 
         AIModule? IUseARelationshipTracker.ModuleToTrackRelationship(CreatureTemplate.Relationship relationship)
         {
-            return relationship.type switch {
-                Eats => preyTracker,
-                Afraid => threatTracker,
-                _ => null
-            };
+            if (relationship.type == Eats) return preyTracker;
+            if (relationship.type == Afraid) return threatTracker;
+            return null;
         }
 
         RelationshipTracker.TrackedCreatureState IUseARelationshipTracker.CreateTrackedCreatureState(RelationshipTracker.DynamicRelationship rel)

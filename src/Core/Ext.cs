@@ -73,31 +73,13 @@ namespace Fisobs.Core
         }
 
         /// <summary>
-        /// Loads an embedded resource named <paramref name="resource"/> into <see cref="Futile.atlasManager"/> if the resource exists.
+        /// Loads an icon for a critob named <paramref name="critobName"/> into <see cref="Futile.atlasManager"/> if the resource exists.
         /// </summary>
-        /// <param name="assembly">The assembly to get the resource from. Use <c>typeof(ThisType).Assembly</c> or <c>this.GetType()</c> to get this value.</param>
-        /// <param name="resource">The name of the embedded resource.</param>
+        /// <param name="critobName">The critob's name.</param>
         /// <returns>If the resource was successfully loaded, the atlas; otherwise, <see langword="null"/>.</returns>
-        public static FAtlas? LoadAtlasFromEmbRes(Assembly assembly, string resource)
+        public static FAtlas? LoadIconAtlas(string critobName)
         {
-            using System.IO.Stream stream = assembly.GetManifestResourceStream(resource);
-
-            if (stream == null) {
-                return null;
-            }
-
-            byte[] image = new byte[stream.Length];
-
-            stream.Read(image, 0, image.Length);
-
-            Texture2D tex = new(1, 1, TextureFormat.ARGB32, false) {
-                filterMode = FilterMode.Point,
-                anisoLevel = 1
-            };
-
-            tex.LoadImage(image);
-
-            return Futile.atlasManager.LoadAtlasFromTexture(resource, tex);
+            return Futile.atlasManager.LoadAtlas($"fisobs/icon_{critobName}.png");
         }
     }
 }

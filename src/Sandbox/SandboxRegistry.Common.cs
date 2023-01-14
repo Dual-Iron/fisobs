@@ -83,14 +83,10 @@ namespace Fisobs.Sandbox
 
         private MultiplayerUnlocks.SandboxUnlockID FromSymbolData(On.MultiplayerUnlocks.orig_SandboxUnlockForSymbolData orig, IconSymbol.IconSymbolData data)
         {
-            if (data.itemType < 0 || data.itemType > AbstractPhysicalObject.AbstractObjectType.OverseerCarcass) {
-                if (sboxes.TryGetValue(data.itemType, out var item) && item.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock) {
-                    return unlock.Type;
-                }
-            } else if (data.critType < 0 || data.critType > CreatureTemplate.Type.Hazer) {
-                if (sboxes.TryGetValue(data.critType, out var crit) && crit.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock) {
-                    return unlock.Type;
-                }
+            if (sboxes.TryGetValue(data.itemType, out var item) && item.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock) {
+                return unlock.Type;
+            } else if (sboxes.TryGetValue(data.critType, out var crit) && crit.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock2) {
+                return unlock2.Type;
             }
             return orig(data);
         }
