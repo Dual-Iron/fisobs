@@ -43,6 +43,7 @@ namespace Fisobs.Creatures
             On.AbstractCreature.ctor += Ctor;
             On.CreatureSymbol.DoesCreatureEarnATrophy += KillsMatter;
             On.MultiplayerUnlocks.FallBackCrit += ArenaFallback;
+            On.WorldLoader.CreatureTypeFromString += WorldLoader_CreatureTypeFromString;
 
             On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
             On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
@@ -259,6 +260,23 @@ namespace Fisobs.Creatures
                 return critob.ArenaFallback();
             }
             return orig(type);
+        }
+
+        private CreatureType WorldLoader_CreatureTypeFromString(On.WorldLoader.orig_CreatureTypeFromString orig, string s)
+        {
+            string name = s.ToLowerInvariant().Trim();
+            foreach (var critob in critobs.Values) {
+                var aliases = critob.Aliases();
+                if (aliases == null) {
+                    continue;
+                }
+                foreach (string alias in aliases) {
+                    if (name == alias.ToLowerInvariant().Trim()) {
+                        return critob.Type;
+                    }
+                }
+            }
+            return orig(s);
         }
 
         private IconSymbol.IconSymbolData CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)

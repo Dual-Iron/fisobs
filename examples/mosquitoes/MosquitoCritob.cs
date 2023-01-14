@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using static PathCost.Legality;
 using CreatureType = CreatureTemplate.Type;
 using Fisobs.Sandbox;
-using MoreSlugcats;
 
 namespace Mosquitoes
 {
@@ -126,6 +125,12 @@ namespace Mosquitoes
             return new Mosquito(acrit);
         }
 
+        public override IEnumerable<string> Aliases()
+        {
+            yield return "Mosq";
+            yield return "BloodSucker";
+        }
+
         public override ItemProperties? Properties(Creature crit)
         {
             // If you don't need the `forObject` parameter, store one ItemProperties instance as a static object and return that.
@@ -135,34 +140,6 @@ namespace Mosquitoes
             }
 
             return null;
-        }
-    }
-
-    sealed class MosquitoProperties : ItemProperties
-    {
-        private readonly Mosquito mosquito;
-
-        public MosquitoProperties(Mosquito mosquito)
-        {
-            this.mosquito = mosquito;
-        }
-
-        public override void Grabability(Player player, ref Player.ObjectGrabability grabability)
-        {
-            if (mosquito.State.alive) {
-                grabability = Player.ObjectGrabability.CantGrab;
-            } else {
-                grabability = Player.ObjectGrabability.OneHand;
-            }
-        }
-
-        public override void Nourishment(Player player, ref int quarterPips)
-        {
-            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Saint) {
-                quarterPips = -1;
-            } else {
-                quarterPips = 4 * mosquito.FoodPoints;
-            }
         }
     }
 }

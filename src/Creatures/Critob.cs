@@ -56,6 +56,9 @@ namespace Fisobs.Creatures
         /// <summary>Gets the custom properties of a creature.</summary>
         /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
         public virtual ItemProperties? Properties(Creature crit) => null;
+        /// <summary>Lets other names be used for this creature in world files.</summary>
+        /// <returns>An assortment of aliases for the creature. For example, DaddyLongLegs can also be called Daddy.</returns>
+        public virtual IEnumerable<string> Aliases() => Array.Empty<string>();
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>

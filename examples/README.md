@@ -11,4 +11,6 @@ The `mosquitoes` project contains an example critob. Critobs are analogous to fi
 - One `ArtificialIntelligence` class (MosquitoAI.cs) **iff** the creature template's `AI` field is `true`
 - One `GraphicsModule` class (MosquitoGraphics.cs) if you use `Creature.InitiateGraphicsModule()`
 
+All creatures share the same `AbstractCreature` class, so don't define your own. Store custom state in the creature's CreatureState instead.
+
 Note that critobs are designed for creating **unique** creatures. Custom lizards, vultures, cicadas, etc are beyond a critob's scope. That is likely to come in the future though!
