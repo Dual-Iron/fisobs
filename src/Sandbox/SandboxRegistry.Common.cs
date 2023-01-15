@@ -1,10 +1,10 @@
-﻿using static PlayerProgression;
-using UnityEngine;
-using System;
-using ArenaBehaviors;
-using System.Linq;
+﻿using ArenaBehaviors;
 using Fisobs.Core;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using static PlayerProgression;
 
 namespace Fisobs.Sandbox
 {

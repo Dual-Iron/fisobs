@@ -29,8 +29,7 @@ namespace CentiShields
         {
             try {
                 orig(self);
-            }
-            catch (System.Exception e) {
+            } catch (System.Exception e) {
                 Logger.LogError(e);
             }
         }

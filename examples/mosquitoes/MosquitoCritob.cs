@@ -1,12 +1,11 @@
-﻿using Fisobs.Properties;
-using Fisobs.Creatures;
+﻿using Fisobs.Creatures;
+using Fisobs.Properties;
+using Fisobs.Sandbox;
+using RWCustom;
 using System.Collections.Generic;
+using UnityEngine;
 using static PathCost.Legality;
 using CreatureType = CreatureTemplate.Type;
-using Fisobs.Sandbox;
-using UnityEngine;
-using RWCustom;
-using Fisobs.Core;
 
 namespace Mosquitoes
 {

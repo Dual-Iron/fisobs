@@ -2,11 +2,11 @@
 
 namespace Fisobs.Creatures
 {
-    using TTR = TileTypeResistance;
-    using CR = TileConnectionResistance;
     using static AItile.Accessibility;
-    using static MovementConnection.MovementType;
     using static Creature.DamageType;
+    using static MovementConnection.MovementType;
+    using CR = TileConnectionResistance;
+    using TTR = TileTypeResistance;
 
     /// <summary>
     /// Simplifies the creation of <see cref="CreatureTemplate"/> instances.

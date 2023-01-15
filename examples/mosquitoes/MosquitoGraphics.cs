@@ -218,7 +218,7 @@ namespace Mosquitoes
                 m[0].MoveVertice(i * 4 + 2, vector5 - a6 * num5 - camPos);
                 m[0].MoveVertice(i * 4 + 3, vector5 + a6 * num5 - camPos);
 
-                if (i > 1 && i < meshSegs - 1) {
+                if (i is > 1 and < (meshSegs - 1)) {
                     float d = Mathf.Lerp(0.2f, 0.5f, Mathf.Sin(3.1415927f * Mathf.Pow(Mathf.InverseLerp(2f, meshSegs - 2, i), 0.5f)));
                     m[1].MoveVertice((i - 2) * 4, (vector4 + a4 * num * d + vector5 + a4 * num5 * d) / 2f - a6 * (num5 + num) * 0.5f * d - camPos);
                     m[1].MoveVertice((i - 2) * 4 + 1, (vector4 + a4 * num * d + vector5 + a4 * num5 * d) / 2f + a6 * (num5 + num) * 0.5f * d - camPos);

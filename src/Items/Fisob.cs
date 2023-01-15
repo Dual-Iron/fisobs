@@ -1,5 +1,5 @@
-﻿using Fisobs.Properties;
-using Fisobs.Core;
+﻿using Fisobs.Core;
+using Fisobs.Properties;
 using Fisobs.Sandbox;
 using System;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace Fisobs.Items
 
         /// <inheritdoc/>
         public virtual ItemProperties? Properties(PhysicalObject forObject) => null;
-        
+
         /// <summary>
         /// Loads <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites.
         /// </summary>

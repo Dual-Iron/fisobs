@@ -1,11 +1,11 @@
-﻿using Fisobs.Properties;
-using Fisobs.Core;
+﻿using Fisobs.Core;
+using Fisobs.Properties;
 using Fisobs.Sandbox;
+using RWCustom;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using CreatureType = CreatureTemplate.Type;
-using RWCustom;
 
 namespace Fisobs.Creatures
 {

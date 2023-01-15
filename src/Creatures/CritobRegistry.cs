@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using CreatureType = CreatureTemplate.Type;
 using static StaticWorld;
+using CreatureType = CreatureTemplate.Type;
 
 namespace Fisobs.Creatures
 {

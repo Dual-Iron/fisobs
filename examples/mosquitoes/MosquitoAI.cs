@@ -1,7 +1,7 @@
 ﻿// This code was made by ratrat (https://github.com/ratrat44) and is included in Fisobs with his permission.
 
-using System.Linq;
 using RWCustom;
+using System.Linq;
 using UnityEngine;
 using static CreatureTemplate.Relationship.Type;
 
@@ -106,9 +106,9 @@ namespace Mosquitoes
                 return;
             }
 
-            pathFinder.walkPastPointOfNoReturn = stranded 
+            pathFinder.walkPastPointOfNoReturn = stranded
                 || denFinder.GetDenPosition() is not WorldCoordinate denPos
-                || !pathFinder.CoordinatePossibleToGetBackFrom(denPos) 
+                || !pathFinder.CoordinatePossibleToGetBackFrom(denPos)
                 || threatTracker.Utility() > 0.95f;
 
             utilityComparer.GetUtilityTracker(threatTracker).weight = Custom.LerpMap(threatTracker.ThreatOfTile(creature.pos, true), 0.1f, 2f, 0.1f, 1f, 0.5f);

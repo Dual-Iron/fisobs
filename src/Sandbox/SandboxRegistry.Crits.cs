@@ -53,7 +53,7 @@ namespace Fisobs.Sandbox
                     self.GetMultiplayerMenu.multiplayerUnlocks.SandboxItemUnlocked(unlock.Type)
                     ? new SandboxSettingsInterface.KillScore(menu, self, unlock.Type)
                     : new SandboxSettingsInterface.LockedScore(menu, self);
-                    
+
                 self.scoreControllers.Add(button);
                 self.subObjects.Add(button);
                 button.scoreDragger.UpdateScoreText();

@@ -98,7 +98,7 @@ namespace Mosquitoes
                         lastBloat = bloat;
                         bloat = Mathf.Min(bloat + .003f, 1f);
                     }
-                    
+
                     if (bloat >= 1f && explodeCounter == 0) {
                         explodeCounter += 20;
                     }
@@ -174,7 +174,7 @@ namespace Mosquitoes
 
         void Run(MovementConnection followingConnection)
         {
-            if (followingConnection.type == MovementConnection.MovementType.ShortCut || followingConnection.type == MovementConnection.MovementType.NPCTransportation) {
+            if (followingConnection.type is MovementConnection.MovementType.ShortCut or MovementConnection.MovementType.NPCTransportation) {
                 enteringShortCut = new IntVector2?(followingConnection.StartTile);
                 if (followingConnection.type == MovementConnection.MovementType.NPCTransportation) {
                     NPCTransportationDestination = followingConnection.destinationCoord;

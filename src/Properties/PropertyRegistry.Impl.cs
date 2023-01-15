@@ -1,8 +1,4 @@
 ﻿using Fisobs.Core;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using System;
-using UnityEngine;
 
 namespace Fisobs.Properties
 {

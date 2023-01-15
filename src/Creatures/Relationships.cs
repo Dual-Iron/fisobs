@@ -7,7 +7,7 @@ namespace Fisobs.Creatures
     /// <summary>
     /// A wrapper around a <see cref="CreatureTemplate.Relationship"/> used to establish creature relationships.
     /// </summary>
-    public struct Relationships
+    public readonly struct Relationships
     {
         private readonly CreatureType self;
 
