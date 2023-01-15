@@ -36,11 +36,13 @@ namespace Fisobs.Creatures
         /// <summary>The critob's icon; a <see cref="DefaultIcon"/> by default.</summary>
         /// <remarks>When <see cref="LoadResources(RainWorld)"/> is called, an embedded resource with the name <c>$"icon_{Type}"</c> will be auto-loaded as a <see cref="SimpleIcon"/>, if it exists.</remarks>
         public Icon Icon { get; set; } = new DefaultIcon();
-        /// <summary>The performance cost associated with the entity while it's loaded.</summary>
+        /// <summary>The performance cost associated with the creature while it's loaded.</summary>
         /// <value>A value of 10 is the default, and the minimum. Scavengers and leviathans use 300, lizards use 50, and batflies use 10.</value>
         public float LoadedPerformanceCost { get; set; } = 10f;
         /// <inheritdoc/>
         public SandboxPerformanceCost SandboxPerformanceCost { get; set; } = new(0.2f, 0.0f);
+        /// <summary>How much danger the creature poses to a player that shares a shelter with it.</summary>
+        public ShelterDanger ShelterDanger { get; set; }
 
         /// <summary>Gets a new instance of <see cref="CreatureState"/> for <paramref name="acrit"/>. If spawned by a sandbox unlock, the <c>SandboxData</c> section of the creature's state will equal that unlock's <see cref="SandboxUnlock.Data"/> value.</summary>
         /// <remarks>By default, this returns a <see cref="HealthState"/>.</remarks>

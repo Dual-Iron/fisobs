@@ -19,6 +19,7 @@ namespace Mosquitoes
         {
             LoadedPerformanceCost = 20f;
             SandboxPerformanceCost = new(linear: 0.6f, exponential: 0.1f);
+            ShelterDanger = ShelterDanger.Safe;
 
             RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
         }

@@ -45,8 +45,9 @@ namespace Fisobs.Creatures
             On.AbstractCreature.ctor += Ctor;
             On.CreatureSymbol.DoesCreatureEarnATrophy += KillsMatter;
             On.MultiplayerUnlocks.FallBackCrit += ArenaFallback;
-            On.WorldLoader.CreatureTypeFromString += WorldLoader_CreatureTypeFromString;
+            // TODO: see ShelterDoor.KillAllHostiles
 
+            On.WorldLoader.CreatureTypeFromString += WorldLoader_CreatureTypeFromString;
             On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
             On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
 
