@@ -62,6 +62,7 @@ namespace Fisobs.Creatures
         /// <summary>Gets the custom properties of a creature.</summary>
         /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
         public virtual ItemProperties? Properties(Creature crit) => null;
+
         /// <summary>Extra names used for this creature in world files.</summary>
         /// <returns>An assortment of aliases for the creature. For example, DaddyLongLegs can also be called Daddy.</returns>
         public virtual IEnumerable<string> Aliases() => Array.Empty<string>();
@@ -73,6 +74,9 @@ namespace Fisobs.Creatures
         /// <remarks>By default, this returns the creature's icon color.</remarks>
         /// <returns>A color that should help in identifying the creature.</returns>
         public virtual Color DevtoolsMapColor(AbstractCreature acrit) => Icon.SpriteColor(Icon.Data(acrit));
+
+        /// <summary>Modifies how creatures choose to move across the map.</summary>
+        public virtual void ConnectionIsAllowed(AImap map, MovementConnection connection, ref bool allowed) { }
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>

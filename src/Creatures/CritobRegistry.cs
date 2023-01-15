@@ -50,6 +50,8 @@ namespace Fisobs.Creatures
             On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
             On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
 
+            On.AImap.IsConnectionAllowedForCreature += AImap_IsConnectionAllowedForCreature;
+
             On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
             On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
             On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
@@ -301,6 +303,15 @@ namespace Fisobs.Creatures
                 return critob.DevtoolsMapColor(crit);
             }
             return orig(crit);
+        }
+
+        private bool AImap_IsConnectionAllowedForCreature(On.AImap.orig_IsConnectionAllowedForCreature orig, AImap self, MovementConnection connection, CreatureTemplate crit)
+        {
+            bool ret = orig(self, connection, crit);
+            if (critobs.TryGetValue(crit.type, out var critob)) {
+                critob.ConnectionIsAllowed(self, connection, ref ret);
+            }
+            return ret;
         }
 
         private IconSymbol.IconSymbolData CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)
