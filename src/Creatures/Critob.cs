@@ -56,8 +56,9 @@ namespace Fisobs.Creatures
         /// <summary>Determines if the creature should be displayed when listing kills in arena and hunter modes.</summary>
         public virtual void KillsMatter(ref bool killsMatter) { }
         /// <summary>If this creature would be spawned in arena mode but isn't unlocked yet, the creature returned by this method is spawned instead.</summary>
-        /// <returns>The creature to spawn, or <see langword="null"/> to spawn nothing.</returns>
-        public virtual CreatureType? ArenaFallback() => null;
+        /// <remarks>By default, this returns the creature's ancestor, or <see langword="null"/> if it has none.</remarks>
+        /// <returns>The creature type to spawn, or <see langword="null"/> to spawn nothing.</returns>
+        public virtual CreatureType? ArenaFallback() => StaticWorld.GetCreatureTemplate(Type).ancestor?.type;
         /// <summary>Gets the custom properties of a creature.</summary>
         /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
         public virtual ItemProperties? Properties(Creature crit) => null;
