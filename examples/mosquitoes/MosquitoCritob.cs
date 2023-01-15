@@ -21,6 +21,7 @@ sealed class MosquitoCritob : Critob
         ShelterDanger = ShelterDanger.Safe;
         CreatureName = "Bloodsucker";
 
+        // Not calling a `SpawnsForX` method here will prevent the creature from spawning for that character.
         ExpeditionInfo = new() { Points = 3 };
         ExpeditionInfo.SpawnsForWhite(30);
         ExpeditionInfo.SpawnsForYellow(20);

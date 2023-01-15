@@ -11,7 +11,7 @@ public class ExpeditionInfo
     /// <summary>
     /// How many points the player is awarded for killing the creature.
     /// </summary>
-    /// <value>The default value is 0. For some examples: eggbugs score 2 points, green lizards score 10, and red lizards score 25.</value>
+    /// <value>The default value is 0. Examples: eggbugs score 2 points, scavengers score 6, green lizards score 10, and red lizards score 25.</value>
     public int Points { get; set; }
 
     internal readonly Dictionary<SlugcatStats.Name, int> spawns = new() {
