@@ -5,6 +5,7 @@ namespace CentiShields;
 
 sealed class CentiShieldProperties : ItemProperties
 {
+    // TODO scav support
     public override void Throwable(Player player, ref bool throwable)
         => throwable = false;
 

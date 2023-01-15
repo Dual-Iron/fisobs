@@ -4,6 +4,7 @@ using Fisobs.Sandbox;
 using RWCustom;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using CreatureType = CreatureTemplate.Type;
 
@@ -29,6 +30,7 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
         }
 
         Type = type;
+        CreatureName = Regex.Replace(type.ToString(), "([a-z])([A-Z])", "$1 $2");
     }
 
     /// <summary>The critob's type.</summary>
@@ -43,6 +45,11 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     public SandboxPerformanceCost SandboxPerformanceCost { get; set; } = new(0.2f, 0.0f);
     /// <summary>How much danger the creature poses to a player that shares a shelter with it.</summary>
     public ShelterDanger ShelterDanger { get; set; }
+    /// <summary>The creature's user-facing name. Used in debug logs, <see cref="CreatureFormula"/>, and various Expedition features.</summary>
+    /// <remarks>Defaults to the creature's type with spaces inserted after each lowercase letter that appears before a capital letter. For example, "BouncingBall" becomes "Bouncing Ball".</remarks>
+    public string CreatureName { get; set; }
+    /// <summary>The creature's relevant information for Expedition challenges.</summary>
+    public ExpeditionInfo ExpeditionInfo { get; set; } = new();
 
     /// <summary>Gets a new instance of <see cref="CreatureState"/> for <paramref name="acrit"/>. If spawned by a sandbox unlock, the <c>SandboxData</c> section of the creature's state will equal that unlock's <see cref="SandboxUnlock.Data"/> value.</summary>
     /// <remarks>By default, this returns a <see cref="HealthState"/>.</remarks>
@@ -66,9 +73,9 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
     public virtual ItemProperties? Properties(Creature crit) => null;
 
-    /// <summary>Extra names used for this creature in world files.</summary>
-    /// <returns>An assortment of aliases for the creature. For example, DaddyLongLegs can also be called Daddy.</returns>
-    public virtual IEnumerable<string> Aliases() => Array.Empty<string>();
+    /// <summary>Extra names used for this creature in world files. Case-insensitive.</summary>
+    /// <returns>An assortment of aliases. For example, DaddyLongLegs can also be called Daddy.</returns>
+    public virtual IEnumerable<string> WorldFileAliases() => Array.Empty<string>();
     /// <summary>The name that shows for this creature in the devtools map.</summary>
     /// <remarks>By default, this returns up to the first three characters from the creature's type.</remarks>
     /// <returns>An abbreviated name that should be a few characters long.</returns>

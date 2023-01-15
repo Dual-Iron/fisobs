@@ -19,6 +19,17 @@ sealed class MosquitoCritob : Critob
         LoadedPerformanceCost = 20f;
         SandboxPerformanceCost = new(linear: 0.6f, exponential: 0.1f);
         ShelterDanger = ShelterDanger.Safe;
+        CreatureName = "Bloodsucker";
+
+        ExpeditionInfo = new() { Points = 3 };
+        ExpeditionInfo.SpawnsForWhite(30);
+        ExpeditionInfo.SpawnsForYellow(20);
+        ExpeditionInfo.SpawnsForRed(50);
+        ExpeditionInfo.SpawnsForGourmand(60);
+        ExpeditionInfo.SpawnsForArtificer(90);
+        ExpeditionInfo.SpawnsForRivulet(80);
+        ExpeditionInfo.SpawnsForSpear(80);
+        ExpeditionInfo.SpawnsForSaint(20);
 
         RegisterUnlock(KillScore.Configurable(defaultScore: 3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
     }
@@ -28,7 +39,7 @@ sealed class MosquitoCritob : Critob
         // CreatureFormula does most of the ugly work for you when creating a new CreatureTemplate,
         // but you can construct a CreatureTemplate manually if you need to.
 
-        CreatureTemplate t = new CreatureFormula(this, "Mosquito") {
+        CreatureTemplate t = new CreatureFormula(this) {
             DefaultRelationship = new(CreatureTemplate.Relationship.Type.Eats, 0.25f),
             HasAI = true,
             InstantDeathDamage = 1,
@@ -163,7 +174,7 @@ sealed class MosquitoCritob : Critob
         //allowed |= map.room.GetTile(tile).Terrain == Room.Tile.TerrainType.ShortcutEntrance;
     }
 
-    public override IEnumerable<string> Aliases()
+    public override IEnumerable<string> WorldFileAliases()
     {
         yield return "Mosq";
         yield return "BloodSucker";

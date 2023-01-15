@@ -44,9 +44,9 @@ public sealed class CreatureFormula
     public CreatureTemplate.Relationship DefaultRelationship = new(CreatureTemplate.Relationship.Type.Ignores, 0f);
 
     /// <summary>
-    /// Creates a new <see cref="CreatureFormula"/> from a critob instance.
+    /// Creates a new <see cref="CreatureFormula"/> from a critob.
     /// </summary>
-    public CreatureFormula(Critob critob, string name) : this(null, critob.Type, name)
+    public CreatureFormula(Critob critob) : this(null, critob.Type, critob.CreatureName)
     { }
 
     /// <summary>

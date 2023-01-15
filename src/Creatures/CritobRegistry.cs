@@ -35,6 +35,8 @@ public sealed class CritobRegistry : Registry
     {
         // TODO see RoomRealizer.RoomPerformanceEstimation and iterate to get `critobs[n].PerformanceCost`
 
+        On.Expedition.ChallengeTools.CreatureName += ChallengeTools_CreatureName;
+        On.Expedition.ChallengeTools.SetUpExpeditionCreatures += ChallengeTools_SetUpExpeditionCreatures;
         On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
         On.RainWorld.LoadResources += LoadResources;
 
@@ -58,6 +60,26 @@ public sealed class CritobRegistry : Registry
         On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
         On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
         On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
+    }
+
+    private void ChallengeTools_CreatureName(On.Expedition.ChallengeTools.orig_CreatureName orig, ref string[] creatureNames)
+    {
+        orig(ref creatureNames);
+        foreach (var critob in critobs) {
+            creatureNames[(int)critob.Key] = critob.Value.CreatureName;
+        }
+    }
+
+    private void ChallengeTools_SetUpExpeditionCreatures(On.Expedition.ChallengeTools.orig_SetUpExpeditionCreatures orig)
+    {
+        orig();
+        foreach (var critob in critobs.Values) {
+            Expedition.ChallengeTools.expeditionCreatures.Add(new() {
+                creature = critob.Type,
+                points = critob.ExpeditionInfo.Points,
+                spawns = critob.ExpeditionInfo.spawns,
+            });
+        }
     }
 
     private void StaticWorld_InitStaticWorld(On.StaticWorld.orig_InitStaticWorld orig)
@@ -276,7 +298,7 @@ public sealed class CritobRegistry : Registry
     {
         string name = s.ToLowerInvariant().Trim();
         foreach (var critob in critobs.Values) {
-            var aliases = critob.Aliases();
+            var aliases = critob.WorldFileAliases();
             if (aliases == null) {
                 continue;
             }
