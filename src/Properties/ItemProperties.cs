@@ -1,7 +1,7 @@
 ﻿namespace Fisobs.Properties
 {
     /// <summary>
-    /// Defines properties for custom item types, like how scavengers interact with the item and if players can grab it.
+    /// Defines properties for custom item types, like how scavengers interact with an item and if players can grab it.
     /// </summary>
     public abstract class ItemProperties
     {

@@ -21,6 +21,8 @@ namespace CentiShields
             // If you want a simple grayscale icon, you can omit the following line.
             Icon = new CentiShieldIcon();
 
+            SandboxPerformanceCost = new(linear: 0.35f, exponential: 0f);
+
             RegisterUnlock(OrangeCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.BigCentipede, data: 70);
             RegisterUnlock(RedCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.RedCentipede, data: 0);
         }

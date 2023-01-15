@@ -23,6 +23,8 @@ namespace Fisobs.Sandbox
             }
         }
 
+        // TODO: see SandboxEditor.UpdatePerformanceEstimate, use `sboxes[type].SandboxPerformanceCost` to get performance cost
+
         /// <inheritdoc/>
         protected override void Initialize()
         {

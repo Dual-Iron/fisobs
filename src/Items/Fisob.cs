@@ -35,6 +35,8 @@ namespace Fisobs.Items
         /// <summary>The fisob's icon; a <see cref="DefaultIcon"/> by default.</summary>
         /// <remarks>When <see cref="LoadResources(RainWorld)"/> is called, an embedded resource with the name <c>$"icon_{Type}"</c> will be auto-loaded as a <see cref="SimpleIcon"/>, if it exists.</remarks>
         public Icon Icon { get; set; } = new DefaultIcon();
+        /// <inheritdoc/>
+        public SandboxPerformanceCost SandboxPerformanceCost { get; set; } = new(0.2f, 0.0f);
 
         /// <summary>
         /// Gets a new <see cref="AbstractPhysicalObject"/> instance from custom data.

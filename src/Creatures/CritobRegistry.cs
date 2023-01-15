@@ -33,6 +33,8 @@ namespace Fisobs.Creatures
         /// <inheritdoc/>
         protected override void Initialize()
         {
+            // TODO see RoomRealizer.RoomPerformanceEstimation and iterate to get `critobs[n].PerformanceCost`
+
             On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
             On.RainWorld.LoadResources += LoadResources;
 

@@ -2,10 +2,11 @@
 
 namespace Fisobs.Sandbox
 {
+
     /// <summary>
     /// Represents a sandbox unlock.
     /// </summary>
-    public struct SandboxUnlock
+    public readonly struct SandboxUnlock
     {
         internal readonly bool IsInitialized;
 
