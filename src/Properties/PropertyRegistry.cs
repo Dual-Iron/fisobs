@@ -1,55 +1,54 @@
 ﻿using Fisobs.Core;
 using System.Collections.Generic;
 
-namespace Fisobs.Properties
+namespace Fisobs.Properties;
+
+/// <summary>
+/// A registry that stores <see cref="IPropertyHandler"/> instances and the hooks relevant to them.
+/// </summary>
+public sealed partial class PropertyRegistry : Registry
 {
     /// <summary>
-    /// A registry that stores <see cref="IPropertyHandler"/> instances and the hooks relevant to them.
+    /// The singleton instance of this class.
     /// </summary>
-    public sealed partial class PropertyRegistry : Registry
+    public static PropertyRegistry Instance { get; } = new PropertyRegistry();
+
+    readonly Dictionary<PhysobType, IPropertyHandler> objs = new();
+
+    private PropertyRegistry() { }
+
+    /// <inheritdoc/>
+    protected override void Process(IContent content)
     {
-        /// <summary>
-        /// The singleton instance of this class.
-        /// </summary>
-        public static PropertyRegistry Instance { get; } = new PropertyRegistry();
+        if (content is IPropertyHandler common) {
+            objs[common.Type] = common;
+        }
+    }
 
-        readonly Dictionary<PhysobType, IPropertyHandler> objs = new();
+    /// <inheritdoc/>
+    protected override void Initialize()
+    {
+        On.Player.IsObjectThrowable += Player_IsObjectThrowable;
+        On.Player.Grabability += Player_Grabability;
+        On.ScavengerAI.RealWeapon += ScavengerAI_RealWeapon;
+        On.ScavengerAI.WeaponScore += ScavengerAI_WeaponScore;
+        On.ScavengerAI.CollectScore_PhysicalObject_bool += ScavengerAI_CollectScore_PhysicalObject_bool;
 
-        private PropertyRegistry() { }
+        // Food
+        On.Player.ObjectEaten += Player_ObjectEaten;
+        On.SlugcatStats.NourishmentOfObjectEaten += SlugcatStats_NourishmentOfObjectEaten;
+    }
 
-        /// <inheritdoc/>
-        protected override void Process(IContent content)
-        {
-            if (content is IPropertyHandler common) {
-                objs[common.Type] = common;
+    private ItemProperties? P(PhysicalObject po)
+    {
+        if (po?.abstractPhysicalObject is AbstractPhysicalObject apo) {
+            if (objs.TryGetValue(apo.type, out IPropertyHandler one)) {
+                return one.Properties(po);
+            }
+            if (apo is AbstractCreature crit && objs.TryGetValue(crit.creatureTemplate.type, out IPropertyHandler two)) {
+                return two.Properties(po);
             }
         }
-
-        /// <inheritdoc/>
-        protected override void Initialize()
-        {
-            On.Player.IsObjectThrowable += Player_IsObjectThrowable;
-            On.Player.Grabability += Player_Grabability;
-            On.ScavengerAI.RealWeapon += ScavengerAI_RealWeapon;
-            On.ScavengerAI.WeaponScore += ScavengerAI_WeaponScore;
-            On.ScavengerAI.CollectScore_PhysicalObject_bool += ScavengerAI_CollectScore_PhysicalObject_bool;
-
-            // Food
-            On.Player.ObjectEaten += Player_ObjectEaten;
-            On.SlugcatStats.NourishmentOfObjectEaten += SlugcatStats_NourishmentOfObjectEaten;
-        }
-
-        private ItemProperties? P(PhysicalObject po)
-        {
-            if (po?.abstractPhysicalObject is AbstractPhysicalObject apo) {
-                if (objs.TryGetValue(apo.type, out IPropertyHandler one)) {
-                    return one.Properties(po);
-                }
-                if (apo is AbstractCreature crit && objs.TryGetValue(crit.creatureTemplate.type, out IPropertyHandler two)) {
-                    return two.Properties(po);
-                }
-            }
-            return null;
-        }
+        return null;
     }
 }

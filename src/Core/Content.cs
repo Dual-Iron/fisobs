@@ -5,35 +5,34 @@ using UnityEngine;
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
-namespace Fisobs.Core
+namespace Fisobs.Core;
+
+/// <summary>
+/// Used to register custom content.
+/// </summary>
+public static class Content
 {
     /// <summary>
-    /// Used to register custom content.
+    /// Registers some content. Call this from your mod's entry point.
     /// </summary>
-    public static class Content
+    /// <param name="content">A bunch of content. Currently, fisobs provides <see cref="Items.Fisob"/> and <see cref="Creatures.Critob"/> for content types.</param>
+    public static void Register(params IContent[] content)
     {
-        /// <summary>
-        /// Registers some content. Call this from your mod's entry point.
-        /// </summary>
-        /// <param name="content">A bunch of content. Currently, fisobs provides <see cref="Items.Fisob"/> and <see cref="Creatures.Critob"/> for content types.</param>
-        public static void Register(params IContent[] content)
-        {
-            try {
-                RegisterInner(content);
-            } catch (Exception e) {
-                Debug.LogException(e);
-                Console.WriteLine(e);
-                throw;
-            }
+        try {
+            RegisterInner(content);
+        } catch (Exception e) {
+            Debug.LogException(e);
+            Console.WriteLine(e);
+            throw;
         }
+    }
 
-        private static void RegisterInner(IContent[] entries)
-        {
-            foreach (var entry in entries) {
-                foreach (var registry in entry.Registries()) {
-                    registry.InitInternal();
-                    registry.ProcessInternal(entry);
-                }
+    private static void RegisterInner(IContent[] entries)
+    {
+        foreach (var entry in entries) {
+            foreach (var registry in entry.Registries()) {
+                registry.InitInternal();
+                registry.ProcessInternal(entry);
             }
         }
     }
