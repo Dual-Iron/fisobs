@@ -50,9 +50,9 @@ namespace Fisobs.Creatures
             On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
             On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
 
-            // TODO see AImap.TileAccessibleToCreature(IntVector2 pos, CreatureTemplate crit)
-            // and hook it using Critob.TileIsAllowed
-            On.AImap.IsConnectionAllowedForCreature += AImap_IsConnectionAllowedForCreature;
+            // TODO see AImap.TileAccessibleToCreature(IntVector2 pos, CreatureTemplate crit) and hook it using Critob.TileIsAllowed
+            // TODO see AImap.IsConnectionAllowedForCreature and hook it using Critob.ConnectionIsAllowed
+            On.ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon.AllowedTile += StayOutOfTerrainIcon_AllowedTile;
 
             On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
             On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
@@ -307,13 +307,13 @@ namespace Fisobs.Creatures
             return orig(crit);
         }
 
-        private bool AImap_IsConnectionAllowedForCreature(On.AImap.orig_IsConnectionAllowedForCreature orig, AImap self, MovementConnection connection, CreatureTemplate crit)
+        private bool StayOutOfTerrainIcon_AllowedTile(On.ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon.orig_AllowedTile orig, ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon self, Vector2 tst)
         {
-            bool ret = orig(self, connection, crit);
-            if (critobs.TryGetValue(crit.type, out var critob)) {
-                critob.ConnectionIsAllowed(self, connection, ref ret);
+            bool? ret = null;
+            if (critobs.TryGetValue(self.iconData.critType, out var critob)) {
+                critob.TileIsAllowed(self.room.aimap, self.room.GetTilePosition(tst), ref ret);
             }
-            return ret;
+            return ret ?? orig(self, tst);
         }
 
         private IconSymbol.IconSymbolData CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)

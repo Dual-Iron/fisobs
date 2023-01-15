@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RWCustom;
+using System;
 using System.Reflection;
 using UnityEngine;
 
@@ -70,6 +71,15 @@ namespace Fisobs.Core
         public static string SaveToString(this AbstractPhysicalObject apo, string customData = "")
         {
             return EntitySaveData.CreateFrom(apo, customData).ToString(apo.world);
+        }
+
+        /// <summary>
+        /// Gets if the location <paramref name="tile"/> on <paramref name="map"/> is <paramref name="tilesOfFreeSpace"/>-or-more tiles away from any solid terrain.
+        /// </summary>
+        /// <returns>True if the space is clear.</returns>
+        public static bool IsFreeSpace(this AImap map, IntVector2 tile, int tilesOfFreeSpace)
+        {
+            return map.getAItile(tile).terrainProximity >= tilesOfFreeSpace;
         }
 
         /// <summary>

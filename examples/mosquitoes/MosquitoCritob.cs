@@ -5,6 +5,8 @@ using static PathCost.Legality;
 using CreatureType = CreatureTemplate.Type;
 using Fisobs.Sandbox;
 using UnityEngine;
+using RWCustom;
+using Fisobs.Core;
 
 namespace Mosquitoes
 {
@@ -127,6 +129,38 @@ namespace Mosquitoes
         public override Creature CreateRealizedCreature(AbstractCreature acrit)
         {
             return new Mosquito(acrit);
+        }
+
+        public override void ConnectionIsAllowed(AImap map, MovementConnection connection, ref bool? allowed)
+        {
+            // DLLs don't travel through shortcuts that start and end in the same room—they only travel through room exits.
+            // To emulate this behavior, use something like:
+
+            //ShortcutData.Type n = ShortcutData.Type.Normal;
+            //if (connection.type == MovementConnection.MovementType.ShortCut) {
+            //    allowed &=
+            //        connection.startCoord.TileDefined && map.room.shortcutData(connection.StartTile).shortCutType == n ||
+            //        connection.destinationCoord.TileDefined && map.room.shortcutData(connection.DestTile).shortCutType == n
+            //        ;
+            //} else if (connection.type == MovementConnection.MovementType.BigCreatureShortCutSqueeze) {
+            //    allowed &=
+            //        map.room.GetTile(connection.startCoord).Terrain == Room.Tile.TerrainType.ShortcutEntrance && map.room.shortcutData(connection.StartTile).shortCutType == n ||
+            //        map.room.GetTile(connection.destinationCoord).Terrain == Room.Tile.TerrainType.ShortcutEntrance && map.room.shortcutData(connection.DestTile).shortCutType == n
+            //        ;
+            //}
+        }
+
+        public override void TileIsAllowed(AImap map, IntVector2 tile, ref bool? allowed)
+        {
+            // Large creatures like vultures, miros birds, and DLLs need 2 tiles of free space to move around in. Leviathans need 4! None of them can fit in one-tile tunnels.
+            // To emulate this behavior, use something like:
+
+            //allowed &= map.IsFreeSpace(tile, tilesOfFreeSpace: 2);
+
+            // DLLs can fit into shortcuts despite being fat.
+            // To emulate this behavior, use something like:
+
+            //allowed |= map.room.GetTile(tile).Terrain == Room.Tile.TerrainType.ShortcutEntrance;
         }
 
         public override IEnumerable<string> Aliases()

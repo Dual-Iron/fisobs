@@ -76,10 +76,10 @@ namespace Fisobs.Creatures
         /// <returns>A color that should help in identifying the creature.</returns>
         public virtual Color DevtoolsMapColor(AbstractCreature acrit) => Icon.SpriteColor(Icon.Data(acrit));
 
-        /// <summary>Modifies what movements creatures are allowed to make.</summary>
-        public virtual void ConnectionIsAllowed(AImap map, MovementConnection connection, ref bool allowed) { }
-        /// <summary>Modifies what tiles creatures are allowed to move into.</summary>
-        public virtual void TileIsAllowed(AImap map, IntVector2 pos, ref bool allowed) { }
+        /// <summary>Modifies what movements creatures are allowed to make. Setting <paramref name="allow"/> to a non-null value will forcefully allow/disallow the connection.</summary>
+        public virtual void ConnectionIsAllowed(AImap map, MovementConnection connection, ref bool? allow) { }
+        /// <summary>Modifies what tiles creatures are allowed to move into. Setting <paramref name="allow"/> to a non-null value will forcefully allow/disallow the tile.</summary>
+        public virtual void TileIsAllowed(AImap map, IntVector2 tile, ref bool? allow) { }
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>
