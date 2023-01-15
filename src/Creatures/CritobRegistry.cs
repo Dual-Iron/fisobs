@@ -47,6 +47,9 @@ namespace Fisobs.Creatures
             On.MultiplayerUnlocks.FallBackCrit += ArenaFallback;
             On.WorldLoader.CreatureTypeFromString += WorldLoader_CreatureTypeFromString;
 
+            On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
+            On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
+
             On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
             On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
             On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
@@ -279,6 +282,25 @@ namespace Fisobs.Creatures
                 }
             }
             return orig(s);
+        }
+
+        private string CreatureVis_CritString(On.DevInterface.MapPage.CreatureVis.orig_CritString orig, AbstractCreature crit)
+        {
+            if (critobs.TryGetValue(crit.creatureTemplate.type, out var critob)) {
+                return critob.DevtoolsMapName(crit);
+            }
+            return orig(crit);
+        }
+
+        private Color CreatureVis_CritCol(On.DevInterface.MapPage.CreatureVis.orig_CritCol orig, AbstractCreature crit)
+        {
+            if (critobs.TryGetValue(crit.creatureTemplate.type, out var critob)) {
+                if (crit.InDen && UnityEngine.Random.value < 0.5f) {
+                    return new(0.5f, 0.5f, 0.5f);
+                }
+                return critob.DevtoolsMapColor(crit);
+            }
+            return orig(crit);
         }
 
         private IconSymbol.IconSymbolData CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)

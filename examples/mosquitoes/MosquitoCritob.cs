@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using static PathCost.Legality;
 using CreatureType = CreatureTemplate.Type;
 using Fisobs.Sandbox;
+using UnityEngine;
 
 namespace Mosquitoes
 {
@@ -132,6 +133,17 @@ namespace Mosquitoes
         {
             yield return "Mosq";
             yield return "BloodSucker";
+        }
+
+        public override string DevtoolsMapName(AbstractCreature acrit)
+        {
+            return "mqto";
+        }
+
+        public override Color DevtoolsMapColor(AbstractCreature acrit)
+        {
+            // Default would return the mosquito's icon color (which is gray), which is fine, but red is better.
+            return new Color(.7f, .4f, .4f);
         }
 
         public override ItemProperties? Properties(Creature crit)

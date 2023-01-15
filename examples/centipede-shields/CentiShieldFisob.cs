@@ -2,8 +2,6 @@
 using Fisobs.Core;
 using Fisobs.Items;
 using Fisobs.Sandbox;
-using System.Linq;
-using UnityEngine;
 
 namespace CentiShields
 {
@@ -64,51 +62,6 @@ namespace CentiShields
             // If you need to use the forObject parameter, pass it to your ItemProperties class's constructor.
             // The Mosquitoes example demonstrates this.
             return properties;
-        }
-    }
-
-    sealed class CentiShieldIcon : Icon
-    {
-        // Vanilla only gives you one int field to store all your custom data.
-        // Here, that int field is used to store the shield's hue, scaled by 1000.
-        // So, 0 is red and 70 is orange.
-        public override int Data(AbstractPhysicalObject apo)
-        {
-            return apo is CentiShieldAbstract shield ? (int)(shield.hue * 1000f) : 0;
-        }
-
-        public override Color SpriteColor(int data)
-        {
-            return RWCustom.Custom.HSL2RGB(data / 1000f, 0.65f, 0.4f);
-        }
-
-        public override string SpriteName(int data)
-        {
-            // Fisobs autoloads the embedded resource named `icon_{Type}` automatically
-            // For CentiShields, this is `icon_CentiShield`
-            return "icon_CentiShield";
-        }
-    }
-
-    sealed class CentiShieldProperties : ItemProperties
-    {
-        public override void Throwable(Player player, ref bool throwable)
-            => throwable = false;
-
-        public override void ScavCollectScore(Scavenger scavenger, ref int score)
-            => score = 3;
-
-        public override void Grabability(Player player, ref Player.ObjectGrabability grabability)
-        {
-            // The player can only grab one centishield at a time,
-            // but that shouldn't prevent them from grabbing a spear,
-            // so don't use Player.ObjectGrabability.BigOneHand
-
-            if (player.grasps.Any(g => g?.grabbed is CentiShield)) {
-                grabability = Player.ObjectGrabability.CantGrab;
-            } else {
-                grabability = Player.ObjectGrabability.OneHand;
-            }
         }
     }
 }

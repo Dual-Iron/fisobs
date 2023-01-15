@@ -42,7 +42,7 @@ namespace Fisobs.Creatures
         public SandboxPerformanceCost SandboxPerformanceCost { get; set; } = new(0.2f, 0.0f);
 
         /// <summary>Gets a new instance of <see cref="CreatureState"/> for <paramref name="acrit"/>. If spawned by a sandbox unlock, the <c>SandboxData</c> section of the creature's state will equal that unlock's <see cref="SandboxUnlock.Data"/> value.</summary>
-        /// <remarks>The default implementation of this method returns a <see cref="HealthState"/>.</remarks>
+        /// <remarks>By default, this returns a <see cref="HealthState"/>.</remarks>
         public virtual CreatureState CreateState(AbstractCreature acrit) => new HealthState(acrit);
         /// <summary>Gets a new instance of <see cref="AbstractCreatureAI"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then null will default to a simple <see cref="AbstractCreatureAI"/>. If false, then this method is not called in the first place.</remarks>
@@ -62,9 +62,17 @@ namespace Fisobs.Creatures
         /// <summary>Gets the custom properties of a creature.</summary>
         /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
         public virtual ItemProperties? Properties(Creature crit) => null;
-        /// <summary>Lets other names be used for this creature in world files.</summary>
+        /// <summary>Extra names used for this creature in world files.</summary>
         /// <returns>An assortment of aliases for the creature. For example, DaddyLongLegs can also be called Daddy.</returns>
         public virtual IEnumerable<string> Aliases() => Array.Empty<string>();
+        /// <summary>The name that shows for this creature in the devtools map.</summary>
+        /// <remarks>By default, this returns up to the first three characters from the creature's type.</remarks>
+        /// <returns>An abbreviated name that should be a few characters long.</returns>
+        public virtual string DevtoolsMapName(AbstractCreature acrit) => Type.ToString().Substring(0, Math.Min(3, Type.ToString().Length));
+        /// <summary>The color that shows for this creature in the devtools map.</summary>
+        /// <remarks>By default, this returns the creature's icon color.</remarks>
+        /// <returns>A color that should help in identifying the creature.</returns>
+        public virtual Color DevtoolsMapColor(AbstractCreature acrit) => Icon.SpriteColor(Icon.Data(acrit));
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>
