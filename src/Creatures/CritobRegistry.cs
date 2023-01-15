@@ -50,6 +50,8 @@ namespace Fisobs.Creatures
             On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
             On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
 
+            // TODO see AImap.TileAccessibleToCreature(IntVector2 pos, CreatureTemplate crit)
+            // and hook it using Critob.TileIsAllowed
             On.AImap.IsConnectionAllowedForCreature += AImap_IsConnectionAllowedForCreature;
 
             On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;

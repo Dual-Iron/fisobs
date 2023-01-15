@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using CreatureType = CreatureTemplate.Type;
+using RWCustom;
 
 namespace Fisobs.Creatures
 {
@@ -75,8 +76,10 @@ namespace Fisobs.Creatures
         /// <returns>A color that should help in identifying the creature.</returns>
         public virtual Color DevtoolsMapColor(AbstractCreature acrit) => Icon.SpriteColor(Icon.Data(acrit));
 
-        /// <summary>Modifies how creatures choose to move across the map.</summary>
+        /// <summary>Modifies what movements creatures are allowed to make.</summary>
         public virtual void ConnectionIsAllowed(AImap map, MovementConnection connection, ref bool allowed) { }
+        /// <summary>Modifies what tiles creatures are allowed to move into.</summary>
+        public virtual void TileIsAllowed(AImap map, IntVector2 pos, ref bool allowed) { }
 
         /// <summary>Gets a new instance of <see cref="ArtificialIntelligence"/> (or <see langword="null"/>) from an abstract creature.</summary>
         /// <remarks>If <see cref="CreatureTemplate.AI"/> is true for <paramref name="acrit"/>, then this must return a non-null object.</remarks>
