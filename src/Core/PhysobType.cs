@@ -78,4 +78,14 @@ public readonly struct PhysobType
     /// Creates a new <see cref="PhysobType"/> that represents a creature type.
     /// </summary>
     public static implicit operator PhysobType(CreatureTemplate.Type critType) => new(critType);
+    /// <summary>
+    /// Creates a new <see cref="PhysobType"/> that represents an icon's object or creature type.
+    /// </summary>
+    public static implicit operator PhysobType(IconSymbol.IconSymbolData icon)
+    {
+        if (icon.itemType == AbstractPhysicalObject.AbstractObjectType.Creature) {
+            return new(icon.critType);
+        }
+        return new(icon.itemType);
+    }
 }

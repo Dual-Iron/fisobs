@@ -1,4 +1,5 @@
-﻿using Fisobs.Core;
+﻿using ArenaBehaviors;
+using Fisobs.Core;
 using System.Collections.Generic;
 
 namespace Fisobs.Sandbox;
@@ -23,8 +24,6 @@ public sealed partial class SandboxRegistry : Registry
         }
     }
 
-    // TODO: see SandboxEditor.UpdatePerformanceEstimate, use `sboxes[type].SandboxPerformanceCost` to get performance cost
-
     /// <inheritdoc/>
     protected override void Initialize()
     {
@@ -39,7 +38,8 @@ public sealed partial class SandboxRegistry : Registry
         On.MultiplayerUnlocks.SandboxUnlockForSymbolData += FromSymbolData;
         On.MultiplayerUnlocks.ParentSandboxID += GetParent;
         On.MultiplayerUnlocks.TiedSandboxIDs += TiedSandboxIDs;
-        On.PlayerProgression.MiscProgressionData.GetTokenCollected_SandboxUnlockID += GetCollected;
+        On.PlayerProgression.MiscProgressionData.GetTokenCollected_SandboxUnlockID += GetCollected; // force-assume slugcat token is collected
+        On.ArenaBehaviors.SandboxEditor.GetPerformanceEstimate += SandboxEditor_GetPerformanceEstimate;
 
         // Creatures
         On.Menu.SandboxSettingsInterface.DefaultKillScores += DefaultKillScores;

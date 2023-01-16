@@ -12,7 +12,7 @@ namespace Mosquitoes;
 
 sealed class MosquitoCritob : Critob
 {
-    public static CreatureType Mosquito = null!;
+    public static readonly CreatureType Mosquito = new("Mosquito", true);
     public static readonly MultiplayerUnlocks.SandboxUnlockID MosquitoUnlock = new("MosquitoUnlock", true);
 
     public MosquitoCritob() : base(Mosquito)
@@ -163,17 +163,17 @@ sealed class MosquitoCritob : Critob
         //}
     }
 
-    public override void TileIsAllowed(AImap map, IntVector2 tile, ref bool? allowed)
+    public override void TileIsAllowed(AImap map, IntVector2 tilePos, ref bool? allowed)
     {
         // Large creatures like vultures, miros birds, and DLLs need 2 tiles of free space to move around in. Leviathans need 4! None of them can fit in one-tile tunnels.
         // To emulate this behavior, use something like:
 
-        //allowed &= map.IsFreeSpace(tile, tilesOfFreeSpace: 2);
+        //allowed &= map.IsFreeSpace(tilePos, tilesOfFreeSpace: 2);
 
         // DLLs can fit into shortcuts despite being fat.
         // To emulate this behavior, use something like:
 
-        //allowed |= map.room.GetTile(tile).Terrain == Room.Tile.TerrainType.ShortcutEntrance;
+        //allowed |= map.room.GetTile(tilePos).Terrain == Room.Tile.TerrainType.ShortcutEntrance;
     }
 
     public override IEnumerable<string> WorldFileAliases()

@@ -12,13 +12,6 @@ sealed class Plugin : BaseUnityPlugin
 {
     public void OnEnable()
     {
-        // TODO remove this when int(ExtEnum<T>) is fixed
-        // Initialize MSC crit types
-        MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.RegisterValues();
-
-        // Once that type is initialized, this enum can be registered.
-        MosquitoCritob.Mosquito = new("Mosquito", true);
-
         Content.Register(new MosquitoCritob());
     }
 }

@@ -78,10 +78,8 @@ public sealed partial class SandboxRegistry : Registry
 
     private MultiplayerUnlocks.SandboxUnlockID FromSymbolData(On.MultiplayerUnlocks.orig_SandboxUnlockForSymbolData orig, IconSymbol.IconSymbolData data)
     {
-        if (sboxes.TryGetValue(data.itemType, out var item) && item.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock) {
+        if (sboxes.TryGetValue(data, out var item) && item.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock) {
             return unlock.Type;
-        } else if (sboxes.TryGetValue(data.critType, out var crit) && crit.SandboxUnlocks.FirstOrDefault(u => u.Data == data.intData) is SandboxUnlock unlock2) {
-            return unlock2.Type;
         }
         return orig(data);
     }
@@ -125,5 +123,15 @@ public sealed partial class SandboxRegistry : Registry
             return true;
         }
         return orig(self, unlockID);
+    }
+
+    private void SandboxEditor_GetPerformanceEstimate(On.ArenaBehaviors.SandboxEditor.orig_GetPerformanceEstimate orig, SandboxEditor.PlacedIcon placedIcon, ref float exponentialPart, ref float linearPart)
+    {
+        if (placedIcon is SandboxEditor.CreatureOrItemIcon icon && sboxes.TryGetValue(icon.iconData, out var sbox)) {
+            linearPart += sbox.SandboxPerformanceCost.Linear;
+            exponentialPart += sbox.SandboxPerformanceCost.Exponential;
+        } else {
+            orig(placedIcon, ref exponentialPart, ref linearPart);
+        }
     }
 }

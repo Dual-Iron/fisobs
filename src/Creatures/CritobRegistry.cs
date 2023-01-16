@@ -33,8 +33,7 @@ public sealed class CritobRegistry : Registry
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        // TODO see RoomRealizer.RoomPerformanceEstimation and iterate to get `critobs[n].PerformanceCost`
-        _ = GhostWorldPresence.GhostID.CC; // prevents a crash by running a cctor
+        _ = GhostWorldPresence.GhostID.CC; // prevents a crash in ExpeditionTools.cctor() by executing ExtEnum<GhostID>.cctor()
         On.Expedition.ChallengeTools.CreatureName += ChallengeTools_CreatureName;
         On.Expedition.ChallengeTools.SetUpExpeditionCreatures += ChallengeTools_SetUpExpeditionCreatures;
         On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
@@ -47,15 +46,17 @@ public sealed class CritobRegistry : Registry
         On.AbstractCreature.ctor += Ctor;
         On.CreatureSymbol.DoesCreatureEarnATrophy += KillsMatter;
         On.MultiplayerUnlocks.FallBackCrit += ArenaFallback;
-        // TODO: see ShelterDoor.KillAllHostiles
+        On.RoomRealizer.GetCreaturePerformanceEstimation += RoomRealizer_GetCreaturePerformanceEstimation;
+        On.ShelterDoor.IsThisHostileCreatureForShelter += ShelterDoor_IsThisHostileCreatureForShelter;
+        On.ShelterDoor.IsThisBigCreatureForShelter += ShelterDoor_IsThisBigCreatureForShelter;
 
         On.WorldLoader.CreatureTypeFromString += WorldLoader_CreatureTypeFromString;
         On.DevInterface.RoomAttractivenessPanel.ctor += RoomAttractivenessPanel_ctor;
         On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
         On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
 
-        // TODO see AImap.TileAccessibleToCreature(IntVector2 pos, CreatureTemplate crit) and hook it using Critob.TileIsAllowed
-        // TODO see AImap.IsConnectionAllowedForCreature and hook it using Critob.ConnectionIsAllowed
+        On.AImap.IsConnectionForceAllowedForCreature += AImap_IsConnectionForceAllowedForCreature;
+        On.AImap.IsTooCloseToTerrain += AImap_IsTooCloseToTerrain;
         On.ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon.AllowedTile += StayOutOfTerrainIcon_AllowedTile;
 
         On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
@@ -289,10 +290,34 @@ public sealed class CritobRegistry : Registry
 
     private CreatureType? ArenaFallback(On.MultiplayerUnlocks.orig_FallBackCrit orig, CreatureType type)
     {
-        if (critobs.TryGetValue(GetCreatureTemplate(type).type, out var critob)) {
+        if (critobs.TryGetValue(type, out var critob)) {
             return critob.ArenaFallback();
         }
         return orig(type);
+    }
+
+    private float RoomRealizer_GetCreaturePerformanceEstimation(On.RoomRealizer.orig_GetCreaturePerformanceEstimation orig, AbstractCreature crit)
+    {
+        if (critobs.TryGetValue(crit.creatureTemplate.type, out var critob)) {
+            return critob.LoadedPerformanceCost;
+        }
+        return orig(crit);
+    }
+
+    private bool ShelterDoor_IsThisHostileCreatureForShelter(On.ShelterDoor.orig_IsThisHostileCreatureForShelter orig, AbstractCreature creature)
+    {
+        if (critobs.TryGetValue(creature.creatureTemplate.type, out var critob)) {
+            return critob.ShelterDanger != ShelterDanger.Safe;
+        }
+        return orig(creature);
+    }
+
+    private bool ShelterDoor_IsThisBigCreatureForShelter(On.ShelterDoor.orig_IsThisBigCreatureForShelter orig, AbstractCreature creature)
+    {
+        if (critobs.TryGetValue(creature.creatureTemplate.type, out var critob)) {
+            return critob.ShelterDanger == ShelterDanger.TooLarge;
+        }
+        return orig(creature);
     }
 
     private CreatureType WorldLoader_CreatureTypeFromString(On.WorldLoader.orig_CreatureTypeFromString orig, string s)
@@ -364,6 +389,32 @@ public sealed class CritobRegistry : Registry
             return critob.DevtoolsMapColor(crit);
         }
         return orig(crit);
+    }
+
+    private bool AImap_IsConnectionForceAllowedForCreature(On.AImap.orig_IsConnectionForceAllowedForCreature orig, AImap self, MovementConnection connection, CreatureTemplate crit, out bool forceAllow)
+    {
+        bool? ret = orig(self, connection, crit, out forceAllow) ? forceAllow : null;
+        if (critobs.TryGetValue(crit.type, out var critob)) {
+            critob.ConnectionIsAllowed(self, connection, ref ret);
+        }
+        if (ret.HasValue) {
+            forceAllow = ret.Value;
+            return true;
+        }
+        return false;
+    }
+
+    private bool AImap_IsTooCloseToTerrain(On.AImap.orig_IsTooCloseToTerrain orig, AImap self, RWCustom.IntVector2 pos, CreatureTemplate crit, out bool result)
+    {
+        bool? ret = orig(self, pos, crit, out result) ? result : null;
+        if (critobs.TryGetValue(crit.type, out var critob)) {
+            critob.TileIsAllowed(self, pos, ref ret);
+        }
+        if (ret.HasValue) {
+            result = ret.Value;
+            return true;
+        }
+        return false;
     }
 
     private bool StayOutOfTerrainIcon_AllowedTile(On.ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon.orig_AllowedTile orig, ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon self, Vector2 tst)
