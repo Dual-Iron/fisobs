@@ -1,4 +1,5 @@
-﻿using Fisobs.Creatures;
+﻿using DevInterface;
+using Fisobs.Creatures;
 using Fisobs.Properties;
 using Fisobs.Sandbox;
 using RWCustom;
@@ -19,7 +20,7 @@ sealed class MosquitoCritob : Critob
         LoadedPerformanceCost = 20f;
         SandboxPerformanceCost = new(linear: 0.6f, exponential: 0.1f);
         ShelterDanger = ShelterDanger.Safe;
-        CreatureName = "Bloodsucker";
+        CreatureName = "Blood Sucker";
 
         // Not calling a `SpawnsForX` method here will prevent the creature from spawning for that character.
         ExpeditionInfo = new() { Points = 3 };
@@ -177,8 +178,15 @@ sealed class MosquitoCritob : Critob
 
     public override IEnumerable<string> WorldFileAliases()
     {
-        yield return "Mosq";
-        yield return "BloodSucker";
+        yield return "mosq";
+        yield return "bloodsucker";
+    }
+
+    public override IEnumerable<RoomAttractivenessPanel.Category> DevtoolsRoomAttraction()
+    {
+        yield return RoomAttractivenessPanel.Category.Flying;
+        yield return RoomAttractivenessPanel.Category.LikesWater;
+        yield return RoomAttractivenessPanel.Category.LikesOutside;
     }
 
     public override string DevtoolsMapName(AbstractCreature acrit)

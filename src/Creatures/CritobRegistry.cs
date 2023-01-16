@@ -34,7 +34,7 @@ public sealed class CritobRegistry : Registry
     protected override void Initialize()
     {
         // TODO see RoomRealizer.RoomPerformanceEstimation and iterate to get `critobs[n].PerformanceCost`
-
+        _ = GhostWorldPresence.GhostID.CC; // prevents a crash by running a cctor
         On.Expedition.ChallengeTools.CreatureName += ChallengeTools_CreatureName;
         On.Expedition.ChallengeTools.SetUpExpeditionCreatures += ChallengeTools_SetUpExpeditionCreatures;
         On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
@@ -50,6 +50,7 @@ public sealed class CritobRegistry : Registry
         // TODO: see ShelterDoor.KillAllHostiles
 
         On.WorldLoader.CreatureTypeFromString += WorldLoader_CreatureTypeFromString;
+        On.DevInterface.RoomAttractivenessPanel.ctor += RoomAttractivenessPanel_ctor;
         On.DevInterface.MapPage.CreatureVis.CritString += CreatureVis_CritString;
         On.DevInterface.MapPage.CreatureVis.CritCol += CreatureVis_CritCol;
 
@@ -77,7 +78,7 @@ public sealed class CritobRegistry : Registry
             Expedition.ChallengeTools.expeditionCreatures.Add(new() {
                 creature = critob.Type,
                 points = critob.ExpeditionInfo.Points,
-                spawns = critob.ExpeditionInfo.spawns,
+                spawns = Expedition.ChallengeTools.FilterSpawns(critob.ExpeditionInfo.spawns),
             });
         }
     }
@@ -309,6 +310,41 @@ public sealed class CritobRegistry : Registry
             }
         }
         return orig(s);
+    }
+
+    private void RoomAttractivenessPanel_ctor(On.DevInterface.RoomAttractivenessPanel.orig_ctor orig, DevInterface.RoomAttractivenessPanel self, DevInterface.DevUI owner, World world, string IDstring, DevInterface.DevUINode parentNode, Vector2 pos, string title, DevInterface.MapPage mapPage)
+    {
+        pos.x -= 120f;
+
+        orig(self, owner, world, IDstring, parentNode, pos, title, mapPage);
+
+        foreach (var critob in critobs.Values) {
+            var cats = critob.DevtoolsRoomAttraction();
+            if (cats == null) {
+                continue;
+            }
+            foreach (var cat in cats) {
+                ref var templateIndices = ref self.categories[(int)cat];
+
+                Array.Resize(ref templateIndices, templateIndices.Length + 1);
+
+                templateIndices[templateIndices.Length - 1] = GetCreatureTemplate(critob.Type).index;
+            }
+        }
+
+        // Traverse from last to first and quit early when we're past the Category nodes.
+        int y = 31;
+        int x = 2;
+        foreach (var creatureButton in self.subNodes.OfType<DevInterface.RoomAttractivenessPanel.CreatureButton>().Reverse()) {
+            if (!creatureButton.Category) {
+                break;
+            }
+            creatureButton.pos = new(5f + 120f * x, 680f - 20f * y);
+            y -= 1;
+        }
+
+        self.size.x += 120f;
+        self.Refresh();
     }
 
     private string CreatureVis_CritString(On.DevInterface.MapPage.CreatureVis.orig_CritString orig, AbstractCreature crit)

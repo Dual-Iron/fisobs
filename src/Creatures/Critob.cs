@@ -74,8 +74,12 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     public virtual ItemProperties? Properties(Creature crit) => null;
 
     /// <summary>Extra names used for this creature in world files. Case-insensitive.</summary>
+    /// <remarks>By default, this returns only <see cref="CreatureName"/> with all spaces removed.</remarks>
     /// <returns>An assortment of aliases. For example, DaddyLongLegs can also be called Daddy.</returns>
-    public virtual IEnumerable<string> WorldFileAliases() => Array.Empty<string>();
+    public virtual IEnumerable<string> WorldFileAliases() => new string[] { CreatureName.Replace(" ", "").ToLowerInvariant() };
+    /// <summary>What categories of room attraction this creature falls under.</summary>
+    /// <returns>An assortment of categories. For example, vultures classify as Flying and LikesOutside.</returns>
+    public virtual IEnumerable<DevInterface.RoomAttractivenessPanel.Category> DevtoolsRoomAttraction() => Array.Empty<DevInterface.RoomAttractivenessPanel.Category>();
     /// <summary>The name that shows for this creature in the devtools map.</summary>
     /// <remarks>By default, this returns up to the first three characters from the creature's type.</remarks>
     /// <returns>An abbreviated name that should be a few characters long.</returns>
