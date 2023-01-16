@@ -43,14 +43,15 @@ public sealed partial class SandboxRegistry : Registry
         //  3 of them [32..36) are food, survival, and spearhit scores. They should never move.
 
         new private readonly SandboxSettingsInterface owner;
-        private readonly PageButton left;
-        private readonly PageButton right;
+        private readonly PageButton up;
+        private readonly PageButton down;
 
         const int Columns = 3;
+        const int RowsDisplayed = 9;
         const int RowMin = 0;
 
         int Rows => Mathf.CeilToInt((owner.scoreControllers.Count - 3) / (float)Columns); // ceil(slots_used / column_count)
-        int RowMax => Rows - 9;
+        int RowMax => Rows - RowsDisplayed;
 
         int rowOffset;
         float rowSmoothed;
@@ -61,16 +62,16 @@ public sealed partial class SandboxRegistry : Registry
 
             float xOffset = 88.666f + 0.01f;
 
-            subObjects.Add(left = new PageButton(this, -1, new(xOffset * 3f, yOffset * 0f)));
-            subObjects.Add(right = new PageButton(this, 1, new(xOffset * 3f, yOffset * 1f)));
+            subObjects.Add(up = new PageButton(this, -1, new(xOffset * 3f, yOffset * 0f)));
+            subObjects.Add(down = new PageButton(this, 1, new(xOffset * 3f, yOffset * 1f)));
         }
 
         public override string ToString() => $"{paginatorKey}{paginatorVersion}";
 
         public override void Update()
         {
-            left.GetButtonBehavior.greyedOut = rowOffset == RowMin;
-            right.GetButtonBehavior.greyedOut = rowOffset == RowMax;
+            up.GetButtonBehavior.greyedOut = rowOffset == RowMin;
+            down.GetButtonBehavior.greyedOut = rowOffset == RowMax;
 
             rowSmoothed = Custom.LerpAndTick(rowSmoothed, rowOffset, 1f / 10f, 1f / 40f);
 
@@ -82,6 +83,8 @@ public sealed partial class SandboxRegistry : Registry
             // Pressed a page button
             if (sender is PageButton pageButton && rowOffset + pageButton.dir >= RowMin && rowOffset + pageButton.dir <= RowMax) {
                 rowOffset += pageButton.dir;
+
+                menu.PlaySound(SoundID.MENU_First_Scroll_Tick);
             }
         }
 
@@ -104,9 +107,9 @@ public sealed partial class SandboxRegistry : Registry
                 score.pos.x = x * xOffset;
                 score.pos.y = y * yOffset - rowSmoothed * yOffset;
 
-                float offsetToRow0 = 0 - (y - rowSmoothed);
-                float offsetToRow8 = 8 - (y - rowSmoothed);
-                float alpha = 1 - Mathf.Max(offsetToRow0, -offsetToRow8);
+                float offsetToRowMin = 0                 - (y - rowSmoothed);
+                float offsetToRowMax = RowsDisplayed - 1 - (y - rowSmoothed);
+                float alpha = 1 - Mathf.Max(offsetToRowMin, -offsetToRowMax);
 
                 SetAlpha(score, Mathf.Pow(Mathf.Clamp01(alpha), 2));
 
