@@ -57,6 +57,40 @@ public sealed class CreatureFormula
         Ancestor = ancestor;
         Type = type;
         Name = name;
+
+        if (ancestor != null) {
+            CopyFrom(ancestor);
+        }
+    }
+
+    private void CopyFrom(CreatureTemplate ancestor)
+    {
+        HasAI = ancestor.AI;
+        InstantDeathDamage = ancestor.instantDeathDamageLimit;
+        DamageResistances = new() {
+            Base = ancestor.baseDamageResistance,
+            Blunt = ancestor.damageRestistances[(int)Blunt, 0],
+            Stab = ancestor.damageRestistances[(int)Stab, 0],
+            Bite = ancestor.damageRestistances[(int)Bite, 0],
+            Water = ancestor.damageRestistances[(int)Water, 0],
+            Explosion = ancestor.damageRestistances[(int)Explosion, 0],
+            Electric = ancestor.damageRestistances[(int)Electric, 0],
+        };
+        StunResistances = new() {
+            Blunt = ancestor.damageRestistances[(int)Blunt, 1],
+            Stab = ancestor.damageRestistances[(int)Stab, 1],
+            Bite = ancestor.damageRestistances[(int)Bite, 1],
+            Water = ancestor.damageRestistances[(int)Water, 1],
+            Explosion = ancestor.damageRestistances[(int)Explosion, 1],
+            Electric = ancestor.damageRestistances[(int)Electric, 1],
+        };
+        if (ancestor.preBakedPathingAncestor != null) {
+            Pathing = PreBakedPathing.Ancestral(ancestor.preBakedPathingAncestor.type);
+        } else if (ancestor.doPreBakedPathing) {
+            Pathing = PreBakedPathing.Original;
+        } else {
+            Pathing = PreBakedPathing.None;
+        }
     }
 
     // Reuse these lists because it saves on memory and performance a bit.
