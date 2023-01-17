@@ -124,7 +124,7 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     /// <param name="parent">The sandbox's parent unlock. If the parent type's token has been collected in story mode, then this item will be unlocked. To unconditionally unlock this item, set <paramref name="parent"/> to <see cref="MultiplayerUnlocks.SandboxUnlockID.Slugcat"/>.</param>
     /// <param name="data">The sandbox unlock's data value. This takes the place of <see cref="Icon.Data(AbstractPhysicalObject)"/> when spawning objects from sandbox mode.</param>
     /// <param name="killScore">The creature unlock's kill score. This is ignored for items.</param>
-    public void RegisterUnlock(KillScore killScore, MultiplayerUnlocks.SandboxUnlockID type, MultiplayerUnlocks.SandboxUnlockID? parent = null, int data = 0)
+    public void RegisterUnlock(int killScore, MultiplayerUnlocks.SandboxUnlockID type, MultiplayerUnlocks.SandboxUnlockID? parent = null, int data = 0)
     {
         sandboxUnlocks.Add(new(type, parent, data, killScore));
     }

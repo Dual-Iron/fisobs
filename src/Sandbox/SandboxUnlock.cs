@@ -27,9 +27,9 @@ public readonly struct SandboxUnlock
     public readonly int Data;
 
     /// <summary>
-    /// The creature unlock's kill score. This is ignored for items.
+    /// The creature unlock's default kill score. This is ignored for items.
     /// </summary>
-    public readonly KillScore KillScore;
+    public readonly int KillScore;
 
     /// <summary>
     /// Creates a new instance of the <see cref="SandboxUnlock"/> class.
@@ -38,7 +38,7 @@ public readonly struct SandboxUnlock
     /// <param name="parent">The sandbox's parent unlock. If the parent type's token has been collected in story mode, then this item will be unlocked. To unconditionally unlock this item, set <paramref name="parent"/> to <see cref="ID.Slugcat"/>.</param>
     /// <param name="data">The sandbox unlock's data value. This takes the place of <see cref="Core.Icon.Data(AbstractPhysicalObject)"/> when spawning objects from sandbox mode.</param>
     /// <param name="killScore">The creature unlock's kill score. This is ignored for items.</param>
-    public SandboxUnlock(ID type, ID? parent, int data, KillScore killScore)
+    public SandboxUnlock(ID type, ID? parent, int data, int killScore)
     {
         IsInitialized = true;
         Type = type;

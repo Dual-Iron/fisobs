@@ -420,7 +420,7 @@ public sealed class CritobRegistry : Registry
     private bool StayOutOfTerrainIcon_AllowedTile(On.ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon.orig_AllowedTile orig, ArenaBehaviors.SandboxEditor.StayOutOfTerrainIcon self, Vector2 tst)
     {
         bool? ret = null;
-        if (critobs.TryGetValue(self.iconData.critType, out var critob)) {
+        if (critobs.TryGetValue(self.iconData.critType, out var critob) && self.room?.aimap != null && self.room.readyForAI) {
             critob.TileIsAllowed(self.room.aimap, self.room.GetTilePosition(tst), ref ret);
         }
         return ret ?? orig(self, tst);
