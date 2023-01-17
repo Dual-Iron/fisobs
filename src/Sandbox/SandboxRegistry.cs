@@ -45,7 +45,7 @@ public sealed partial class SandboxRegistry : Registry
         // Sandbox UI
         On.RainWorld.OnModsInit += RainWorld_OnModsInit;
         On.RainWorld.OnModsDisabled += RainWorld_OnModsDisabled;
-        On.Menu.SandboxSettingsInterface.ctor += AddPages;
+        On.Menu.SandboxSettingsInterface.ctor += AddPaginator;
 
         // Creatures
         On.Menu.SandboxSettingsInterface.DefaultKillScores += DefaultKillScores;
@@ -86,11 +86,20 @@ public sealed partial class SandboxRegistry : Registry
         }
     }
 
-    private void AddPages(On.Menu.SandboxSettingsInterface.orig_ctor orig, SandboxSettingsInterface self, Menu.Menu menu, MenuObject owner)
+    private void AddPaginator(On.Menu.SandboxSettingsInterface.orig_ctor orig, SandboxSettingsInterface self, Menu.Menu menu, MenuObject owner)
     {
         orig(self, menu, owner);
 
-        //self.subObjects.Add(new Paginator(self, Vector2.zero));
+        self.subObjects.Add(new Paginator(self, Vector2.zero));
+
+        if (self.nextPage != null && self.prevPage != null) {
+            self.RemoveSubObject(self.nextPage);
+            self.RemoveSubObject(self.prevPage);
+            self.nextPage.RemoveSprites();
+            self.prevPage.RemoveSprites();
+            self.nextPage = null;
+            self.prevPage = null;
+        }
     }
 
     private void DefaultKillScores(On.Menu.SandboxSettingsInterface.orig_DefaultKillScores orig, ref int[] killScores)
