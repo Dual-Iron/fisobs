@@ -78,7 +78,7 @@ sealed class Paginator : PositionedMenuObject
 
         // Fix position of creature scores
         int i = -1;
-        foreach (ScoreController score in owner.scoreControllers.Where(s => s is KillScore or LockedScore)) {
+        foreach (ScoreController score in owner.scoreControllers.Where(s => s is SandboxSettingsInterface.KillScore or LockedScore)) {
             i++;
 
             int x = i / rows;
@@ -132,7 +132,7 @@ sealed class Paginator : PositionedMenuObject
             if (locked.shadowSprite1 != null) locked.shadowSprite1.alpha = alpha;
             if (locked.shadowSprite2 != null) locked.shadowSprite2.alpha = alpha;
             if (locked.symbolSprite != null) locked.symbolSprite.alpha = alpha;
-        } else if (score is KillScore kill && kill.symbol != null) {
+        } else if (score is SandboxSettingsInterface.KillScore kill && kill.symbol != null) {
             if (kill.symbol.shadowSprite1 != null) kill.symbol.shadowSprite1.alpha = alpha;
             if (kill.symbol.shadowSprite2 != null) kill.symbol.shadowSprite2.alpha = alpha;
             if (kill.symbol.symbolSprite != null) kill.symbol.symbolSprite.alpha = alpha;

@@ -90,7 +90,7 @@ public sealed partial class SandboxRegistry : Registry
     {
         orig(self, menu, owner);
 
-        self.subObjects.Add(new Paginator(self, Vector2.zero));
+        //self.subObjects.Add(new Paginator(self, Vector2.zero));
     }
 
     private void DefaultKillScores(On.Menu.SandboxSettingsInterface.orig_DefaultKillScores orig, ref int[] killScores)
@@ -101,7 +101,7 @@ public sealed partial class SandboxRegistry : Registry
             int unlockTy = (int)unlock.Type;
 
             if (unlockTy >= 0 && unlockTy < killScores.Length) {
-                killScores[unlockTy] = unlock.KillScore;
+                killScores[unlockTy] = unlock.KillScore.Value;
             } else {
                 Debug.LogError($"The sandbox unlock type \"{unlock.Type}\" ({(int)unlock.Type}) is not in the range [0, {killScores.Length}).");
             }
