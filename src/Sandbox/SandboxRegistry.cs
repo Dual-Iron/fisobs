@@ -49,6 +49,7 @@ public sealed partial class SandboxRegistry : Registry
 
         // Creatures
         On.Menu.SandboxSettingsInterface.DefaultKillScores += DefaultKillScores;
+        On.Menu.SandboxSettingsInterface.GetSandboxUnlocksToShow += SandboxSettingsInterface_GetSandboxUnlocksToShow;
 
         // Common.cs: Items + Creatures
         On.SandboxGameSession.SpawnEntity += SpawnEntity;
@@ -115,5 +116,18 @@ public sealed partial class SandboxRegistry : Registry
                 Debug.LogError($"The sandbox unlock type \"{unlock.Type}\" ({(int)unlock.Type}) is not in the range [0, {killScores.Length}).");
             }
         }
+    }
+
+    private List<MultiplayerUnlocks.SandboxUnlockID> SandboxSettingsInterface_GetSandboxUnlocksToShow(On.Menu.SandboxSettingsInterface.orig_GetSandboxUnlocksToShow orig)
+    {
+        var list = orig();
+        foreach (var sbox in sboxes.Values) {
+            foreach (var unlock in sbox.SandboxUnlocks) {
+                if (!unlock.KillScore.IsConfigurable) {
+                    list.Remove(unlock.Type);
+                }
+            }
+        }
+        return list;
     }
 }
