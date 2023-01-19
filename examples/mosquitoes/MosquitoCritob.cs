@@ -33,7 +33,7 @@ sealed class MosquitoCritob : Critob
         ExpeditionInfo.SpawnsForSpear(80);
         ExpeditionInfo.SpawnsForSaint(20);
 
-        RegisterUnlock(killScore: KillScore.Configurable(3), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
+        RegisterUnlock(killScore: KillScore.Configurable(2), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
     }
 
     public override CreatureTemplate CreateTemplate()
