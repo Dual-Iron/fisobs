@@ -74,7 +74,7 @@ public sealed class FisobRegistry : Registry
     private AbstractPhysicalObject? SaveState_AbstractPhysicalObjectFromString(On.SaveState.orig_AbstractPhysicalObjectFromString orig, World world, string objString)
     {
         var data = objString.Split(new[] { "<oA>" }, StringSplitOptions.None);
-        var type = RWCustom.Custom.ParseEnum<ObjectType>(data[1]);
+        var type = new ObjectType(data[1]);
 
         if (fisobs.TryGetValue(type, out Fisob o) && data.Length > 2) {
             EntityID id = EntityID.FromString(data[0]);

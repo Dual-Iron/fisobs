@@ -14,8 +14,6 @@ sealed class Plugin : BaseUnityPlugin
 {
     public void OnEnable()
     {
-        On.RainWorld.Update += RainWorld_Update;
-
         Content.Register(new CentiShieldFisob());
 
         // Create centi shields when centipedes lose their shells
@@ -23,15 +21,6 @@ sealed class Plugin : BaseUnityPlugin
 
         // Protect the player from grabs while holding a shield
         On.Creature.Grab += CreatureGrab;
-    }
-
-    private void RainWorld_Update(On.RainWorld.orig_Update orig, RainWorld self)
-    {
-        try {
-            orig(self);
-        } catch (System.Exception e) {
-            Logger.LogError(e);
-        }
     }
 
     void RoomAddObject(On.Room.orig_AddObject orig, Room self, UpdatableAndDeletable obj)

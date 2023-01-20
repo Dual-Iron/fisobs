@@ -3,7 +3,7 @@
   "name": "Fisobs",
   "version": "3.0.0",
   "authors": "Dual with help from M4rbleL1ne and topicular",
-  "description": "Simplifies adding new objects to Rain World.",
+  "description": "A library that simplifies adding new objects to Rain World.<LINE><LINE>github.com/Dual-Iron/fisobs",
   "requirements": [],
   "requirements_names": [],
   "checksum_override_version": false
