@@ -1,6 +1,9 @@
 ﻿using ArenaBehaviors;
 using Fisobs.Core;
 using Menu;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using RWCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +46,9 @@ public sealed partial class SandboxRegistry : Registry
     protected override void Initialize()
     {
         // Sandbox UI
+        On.Menu.SandboxSettingsInterface.ReinitInterface += SandboxSettingsInterface_ReinitInterface1;
         On.RainWorld.OnModsInit += RainWorld_OnModsInit;
         On.RainWorld.OnModsDisabled += RainWorld_OnModsDisabled;
-        On.Menu.SandboxSettingsInterface.ctor += AddPaginator;
 
         // Creatures
         On.Menu.SandboxSettingsInterface.DefaultKillScores += DefaultKillScores;
@@ -60,6 +63,41 @@ public sealed partial class SandboxRegistry : Registry
         On.PlayerProgression.MiscProgressionData.GetTokenCollected_SandboxUnlockID += GetCollected; // force-assume slugcat token is collected
         On.ArenaBehaviors.SandboxEditor.GetPerformanceEstimate += SandboxEditor_GetPerformanceEstimate;
     }
+
+    private void SandboxSettingsInterface_ReinitInterface1(On.Menu.SandboxSettingsInterface.orig_ReinitInterface orig, SandboxSettingsInterface self)
+    {
+        orig(self);
+
+        if (self.nextPage != null && self.prevPage != null) {
+            self.RemoveSubObject(self.nextPage);
+            self.RemoveSubObject(self.prevPage);
+            self.nextPage.RemoveSprites();
+            self.prevPage.RemoveSprites();
+            self.nextPage = null;
+            self.prevPage = null;
+        }
+
+        self.subObjects.Add(new Paginator(self, Vector2.zero));
+
+        foreach (var ctrl in self.scoreControllers) {
+            ctrl.RemoveSprites();
+            self.RemoveSubObject(ctrl);
+        }
+        self.scoreControllers.Clear();
+
+        var __ = new IntVector2();
+        var show = SandboxSettingsInterface.GetSandboxUnlocksToShow();
+        foreach (var unlock in show) {
+            self.AddScoreButton(unlock, ref __);
+        }
+
+        self.AddPositionedScoreButton(new SandboxSettingsInterface.MiscScore(self.menu, self, self.menu.Translate("Food"), "FOODSCORE"), ref __, default);
+        self.AddPositionedScoreButton(new SandboxSettingsInterface.MiscScore(self.menu, self, self.menu.Translate("Survive"), "SURVIVESCORE"), ref __, default);
+        self.AddPositionedScoreButton(new SandboxSettingsInterface.MiscScore(self.menu, self, self.menu.Translate("Spear hit"), "SPEARHITSCORE"), ref __, default);
+
+        self.scoreControllers.ForEach(s => s.scoreDragger.UpdateScoreText());
+    }
+
 
     private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
@@ -87,29 +125,12 @@ public sealed partial class SandboxRegistry : Registry
         }
     }
 
-    private void AddPaginator(On.Menu.SandboxSettingsInterface.orig_ctor orig, SandboxSettingsInterface self, Menu.Menu menu, MenuObject owner)
-    {
-        orig(self, menu, owner);
-
-        self.subObjects.Add(new Paginator(self, Vector2.zero));
-
-        if (self.nextPage != null && self.prevPage != null) {
-            self.RemoveSubObject(self.nextPage);
-            self.RemoveSubObject(self.prevPage);
-            self.nextPage.RemoveSprites();
-            self.prevPage.RemoveSprites();
-            self.nextPage = null;
-            self.prevPage = null;
-        }
-    }
-
     private void DefaultKillScores(On.Menu.SandboxSettingsInterface.orig_DefaultKillScores orig, ref int[] killScores)
     {
         orig(ref killScores);
 
         foreach (var unlock in sboxes.Values.Where(c => c.Type.IsCrit).SelectMany(c => c.SandboxUnlocks)) {
             int unlockTy = (int)unlock.Type;
-
             if (unlockTy >= 0 && unlockTy < killScores.Length) {
                 killScores[unlockTy] = unlock.KillScore.Value;
             } else {

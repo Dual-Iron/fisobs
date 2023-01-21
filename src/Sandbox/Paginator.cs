@@ -8,29 +8,13 @@ namespace Fisobs.Sandbox;
 
 sealed class Paginator : PositionedMenuObject
 {
-    sealed class PageButton : SymbolButton
-    {
-        public readonly int dir;
-
-        public PageButton(MenuObject owner, int dir, Vector2 pos) : base(owner.menu, owner, "Menu_Symbol_Arrow", "", pos)
-        {
-            this.dir = dir;
-        }
-
-        public override void GrafUpdate(float timeStacker)
-        {
-            base.GrafUpdate(timeStacker);
-            symbolSprite.rotation = dir * 90 + 90;
-        }
-    }
-
     // Per-controller offsets. pos = offset * index
     const float xOffset = 88.666f + 0.01f;
     const float yOffset = -30f;
 
     new private readonly SandboxSettingsInterface owner;
-    private readonly PageButton up;
-    private readonly PageButton down;
+    private readonly LevelSelector.ScrollButton up;
+    private readonly LevelSelector.ScrollButton down;
 
     const int Columns = 3;
     const int RowsDisplayed = 9;
@@ -48,8 +32,8 @@ sealed class Paginator : PositionedMenuObject
 
         float xOffset = 88.666f + 0.01f;
 
-        subObjects.Add(up = new PageButton(this, -1, new(xOffset * 3f, yOffset * 0f)));
-        subObjects.Add(down = new PageButton(this, 1, new(xOffset * 3f, yOffset * 1f)));
+        subObjects.Add(up = new LevelSelector.ScrollButton(menu, this, "UP", new(xOffset * 3f, yOffset * 0f), 0));
+        subObjects.Add(down = new LevelSelector.ScrollButton(menu, this, "DOWN", new(xOffset * 3f, yOffset * 1f), 2));
     }
 
     public override void Update()
@@ -65,10 +49,8 @@ sealed class Paginator : PositionedMenuObject
     public override void Singal(MenuObject sender, string message)
     {
         // Pressed a page button
-        if (sender is PageButton pageButton && rowOffset + pageButton.dir >= RowMin && rowOffset + pageButton.dir <= RowMax) {
-            rowOffset += pageButton.dir;
-
-            menu.PlaySound(SoundID.MENU_First_Scroll_Tick);
+        if (sender is LevelSelector.ScrollButton pageButton && (pageButton == up && rowOffset - 1 >= RowMin || pageButton == down && rowOffset + 1 <= RowMax)) {
+            rowOffset += pageButton == up ? -1 : 1;
         }
     }
 
