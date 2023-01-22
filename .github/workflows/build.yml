@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: '7.0.x'
     - name: Build solution
-      run: dotnet publish src -c Release -o output
+      run: dotnet publish Fisobs.sln -c Release -o output
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
