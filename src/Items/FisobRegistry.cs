@@ -31,14 +31,14 @@ public sealed class FisobRegistry : Registry
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        On.RainWorld.LoadResources += LoadResources;
+        On.RainWorld.OnModsInit += RainWorld_OnModsInit;
         On.ItemSymbol.SymbolDataFromItem += ItemSymbol_SymbolDataFromItem;
         On.ItemSymbol.ColorForItem += ItemSymbol_ColorForItem;
         On.ItemSymbol.SpriteNameForItem += ItemSymbol_SpriteNameForItem;
         On.SaveState.AbstractPhysicalObjectFromString += SaveState_AbstractPhysicalObjectFromString;
     }
 
-    private void LoadResources(On.RainWorld.orig_LoadResources orig, RainWorld self)
+    private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
         orig(self);
 

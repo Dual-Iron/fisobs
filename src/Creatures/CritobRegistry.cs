@@ -33,11 +33,12 @@ public sealed class CritobRegistry : Registry
     /// <inheritdoc/>
     protected override void Initialize()
     {
+        On.RainWorld.OnModsInit += RainWorld_OnModsInit;
+
         _ = GhostWorldPresence.GhostID.CC; // prevents a crash in ExpeditionTools.cctor() by executing ExtEnum<GhostID>.cctor()
         On.Expedition.ChallengeTools.CreatureName += ChallengeTools_CreatureName;
         On.Expedition.ChallengeTools.SetUpExpeditionCreatures += ChallengeTools_SetUpExpeditionCreatures;
         On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
-        On.RainWorld.LoadResources += LoadResources;
 
         On.Player.CanEatMeat += Player_CanEatMeat;
         On.Player.Grabbed += PlayerGrabbed;
@@ -62,6 +63,15 @@ public sealed class CritobRegistry : Registry
         On.CreatureSymbol.SymbolDataFromCreature += CreatureSymbol_SymbolDataFromCreature;
         On.CreatureSymbol.ColorOfCreature += CreatureSymbol_ColorOfCreature;
         On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
+    }
+
+    private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
+    {
+        orig(self);
+
+        foreach (var common in critobs.Values) {
+            common.LoadResources(self);
+        }
     }
 
     private void ChallengeTools_CreatureName(On.Expedition.ChallengeTools.orig_CreatureName orig, ref string[] creatureNames)
@@ -178,15 +188,6 @@ public sealed class CritobRegistry : Registry
         // Establish specific relationships
         foreach (Critob critob in critobs.Values) {
             critob.EstablishRelationships();
-        }
-    }
-
-    private void LoadResources(On.RainWorld.orig_LoadResources orig, RainWorld self)
-    {
-        orig(self);
-
-        foreach (var common in critobs.Values) {
-            common.LoadResources(self);
         }
     }
 
