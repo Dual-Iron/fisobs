@@ -98,13 +98,14 @@ public sealed partial class SandboxRegistry : Registry
     private List<MultiplayerUnlocks.SandboxUnlockID> TiedSandboxIDs(On.MultiplayerUnlocks.orig_TiedSandboxIDs orig, MultiplayerUnlocks.SandboxUnlockID parent, bool includeParent)
     {
         var ret = orig(parent, includeParent);
+
         int count = ret.Count;
 
-        foreach (object o in Enum.GetValues(typeof(MultiplayerUnlocks.SandboxUnlockID))) {
-            var id = (MultiplayerUnlocks.SandboxUnlockID)o;
+        foreach (string name in ExtEnumBase.GetNames(typeof(MultiplayerUnlocks.SandboxUnlockID))) {
+            var childUnlock = new MultiplayerUnlocks.SandboxUnlockID(name);
 
-            if (MultiplayerUnlocks.ParentSandboxID(id) == parent) {
-                ret.Add(id);
+            if (MultiplayerUnlocks.ParentSandboxID(childUnlock) == parent) {
+                ret.Add(childUnlock);
             }
         }
 

@@ -106,6 +106,7 @@ sealed class Paginator : PositionedMenuObject
 
         score.scoreDragger.buttonBehav.greyedOut = alpha < 0.5f;
         score.scoreDragger.label.label.alpha = alpha;
+        score.scoreDragger.roundedRect.fillAlpha = alpha;
         foreach (var sprite in score.scoreDragger.roundedRect.sprites) {
             sprite.alpha = alpha;
         }
