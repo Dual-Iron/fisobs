@@ -50,7 +50,7 @@ public abstract class Fisob : IContent, IPropertyHandler, ISandboxHandler
     public virtual ItemProperties? Properties(PhysicalObject forObject) => null;
 
     /// <summary>
-    /// Loads <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites.
+    /// Loads <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites. Called once.
     /// </summary>
     /// <param name="rainWorld">The current <see cref="RainWorld"/> instance.</param>
     public virtual void LoadResources(RainWorld rainWorld)

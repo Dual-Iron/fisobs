@@ -11,6 +11,8 @@ namespace Fisobs.Items;
 /// </summary>
 public sealed class FisobRegistry : Registry
 {
+    bool init;
+
     /// <summary>
     /// The singleton instance of this class.
     /// </summary>
@@ -42,8 +44,11 @@ public sealed class FisobRegistry : Registry
     {
         orig(self);
 
-        foreach (var common in fisobs.Values) {
-            common.LoadResources(self);
+        if (!init) {
+            init = true;
+            foreach (var common in fisobs.Values) {
+                common.LoadResources(self);
+            }
         }
     }
 

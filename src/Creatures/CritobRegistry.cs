@@ -13,7 +13,7 @@ namespace Fisobs.Creatures;
 /// </summary>
 public sealed class CritobRegistry : Registry
 {
-    private static CreatureTemplate? dummy;
+    bool init;
 
     /// <summary>
     /// The singleton instance of this class.
@@ -69,8 +69,11 @@ public sealed class CritobRegistry : Registry
     {
         orig(self);
 
-        foreach (var common in critobs.Values) {
-            common.LoadResources(self);
+        if (!init) {
+            init = true;
+            foreach (var common in critobs.Values) {
+                common.LoadResources(self);
+            }
         }
     }
 
@@ -145,11 +148,9 @@ public sealed class CritobRegistry : Registry
             Array.Resize(ref creatureTemplates, maxType + 1);
 
             for (int i = oldLen; i < maxType + 1; i++) {
-                dummy ??= new(new CreatureType($"Unknown", register: false), null, new(), new(), default) {
+                creatureTemplates[i] = new(new CreatureType($"Unknown", register: false), null, new(), new(), default) {
                     name = "Unregistered HyperCam 2"
                 };
-
-                creatureTemplates[i] = dummy;
             }
         }
 

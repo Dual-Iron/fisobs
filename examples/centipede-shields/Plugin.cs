@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace CentiShields;
 
-[BepInPlugin("org.dual.centishields", nameof(CentiShields), "1.0.0")]
+[BepInPlugin("org.dual.centishields", nameof(CentiShields), "1.1.0")]
 sealed class Plugin : BaseUnityPlugin
 {
     public void OnEnable()

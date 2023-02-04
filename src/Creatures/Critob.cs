@@ -105,7 +105,7 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     public abstract void EstablishRelationships();
 
     /// <summary>
-    /// Used to load <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites.
+    /// Used to load <see cref="FAtlas"/> and <see cref="FAtlasElement"/> sprites. Called once.
     /// </summary>
     /// <param name="rainWorld">The current <see cref="RainWorld"/> instance.</param>
     public virtual void LoadResources(RainWorld rainWorld)
