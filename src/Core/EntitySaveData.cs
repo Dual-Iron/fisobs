@@ -78,33 +78,22 @@ public readonly struct EntitySaveData
     /// Gets this entity's save data as a string.
     /// </summary>
     /// <returns>A string representation of this data.</returns>
-    public string ToString(World world)
+    public string ToString(World? world)
     {
-        string roomName = world.GetAbstractRoom(Pos.room)?.name ?? Pos.ResolveRoomName() ?? Pos.room.ToString();
-
         if (Type.IsCrit) {
+            string roomName = world?.GetAbstractRoom(Pos.room)?.name ?? Pos.ResolveRoomName() ?? Pos.room.ToString();
+
             return $"{Type.CritType}<cA>{ID}<cA>{roomName}.{Pos.abstractNode}<cA>{CustomData}";
         }
 
         string customDataStr = string.IsNullOrEmpty(CustomData) ? "" : $"<oA>{CustomData}";
 
-        return $"{ID}<oA>{Type.ObjectType}<oA>{roomName}.{Pos.x}.{Pos.y}.{Pos.abstractNode}{customDataStr}";
+        return $"{ID}<oA>{Type.ObjectType}<oA>{Pos.SaveToString()}{customDataStr}";
     }
 
     /// <summary>
     /// Gets this entity's save data as a string.
     /// </summary>
     /// <returns>A string representation of this data.</returns>
-    public override string ToString()
-    {
-        string roomName = Pos.ResolveRoomName() ?? Pos.room.ToString();
-
-        if (Type.IsCrit) {
-            return $"{Type.CritType}<cA>{ID}<cA>{roomName}.{Pos.abstractNode}<cA>{CustomData}";
-        }
-
-        string customDataStr = string.IsNullOrEmpty(CustomData) ? "" : $"<oA>{CustomData}";
-
-        return $"{ID}<oA>{Type.ObjectType}<oA>{roomName}.{Pos.x}.{Pos.y}.{Pos.abstractNode}{customDataStr}";
-    }
+    public override string ToString() => ToString(null);
 }

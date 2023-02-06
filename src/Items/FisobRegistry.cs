@@ -82,28 +82,14 @@ public sealed class FisobRegistry : Registry
         var type = new ObjectType(data[1]);
 
         if (fisobs.TryGetValue(type, out Fisob o) && data.Length > 2) {
-            EntityID id = EntityID.FromString(data[0]);
-
-            string[] coordParts = data[2].Split('.');
-
-            WorldCoordinate coord;
-
-            if (int.TryParse(coordParts[0], out int room) &&
-                int.TryParse(coordParts[1], out int x) &&
-                int.TryParse(coordParts[2], out int y) &&
-                int.TryParse(coordParts[3], out int node)) {
-                coord = new WorldCoordinate(room, x, y, node);
-            } else {
-                Debug.LogError($"Corrupt world coordinate on object \"{id}\", type \"{o.Type}\".");
-                return null;
-            }
-
-            string customData = data.Length == 4 ? data[3] : "";
-
             if (data.Length > 4) {
                 Debug.LogError($"Save data had more than 4 <oA> sections in fisob \"{o.Type}\". Override `APO.ToString()` to return `this.SaveAsString(...)`.");
                 return null;
             }
+
+            EntityID id = EntityID.FromString(data[0]);
+            WorldCoordinate coord = WorldCoordinate.FromString(data[2]);
+            string customData = data.Length == 4 ? data[3] : "";
 
             try {
                 return o.Parse(world, new EntitySaveData(o.Type, id, coord, customData), null);
