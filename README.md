@@ -1,4 +1,4 @@
-# fisob-api
+# fisobs
 A programming library that makes creating new Rain World content easier. Currently supports adding new items and creatures.
 
 Has several examples. Documentation is extensive. Bereft of copyright.

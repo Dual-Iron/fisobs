@@ -20,8 +20,8 @@ sealed class CentiShieldIcon : Icon
 
     public override string SpriteName(int data)
     {
-        // Fisobs autoloads the embedded resource named `icon_{Type}` automatically
-        // For CentiShields, this is `icon_CentiShield`
+        // Fisobs autoloads the file in the mod folder named "icon_{Type}.png"
+        // To use that, just remove the png suffix: "icon_CentiShield"
         return "icon_CentiShield";
     }
 }
