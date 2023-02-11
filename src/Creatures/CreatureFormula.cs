@@ -50,16 +50,22 @@ public sealed class CreatureFormula
     { }
 
     /// <summary>
+    /// Creates a new <see cref="CreatureFormula"/> from a critob.
+    /// </summary>
+    public CreatureFormula(CreatureTemplate.Type? ancestor, Critob critob) : this(ancestor, critob.Type, critob.CreatureName)
+    { }
+
+    /// <summary>
     /// Creates a new <see cref="CreatureFormula"/>.
     /// </summary>
-    public CreatureFormula(CreatureTemplate? ancestor, CreatureTemplate.Type type, string name)
+    public CreatureFormula(CreatureTemplate.Type? ancestor, CreatureTemplate.Type type, string name)
     {
-        Ancestor = ancestor;
+        Ancestor = ancestor == null ? null : StaticWorld.GetCreatureTemplate(ancestor);
         Type = type;
         Name = name;
 
-        if (ancestor != null) {
-            CopyFrom(ancestor);
+        if (Ancestor != null) {
+            CopyFrom(Ancestor);
         }
     }
 

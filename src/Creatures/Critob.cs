@@ -4,6 +4,7 @@ using Fisobs.Sandbox;
 using RWCustom;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using CreatureType = CreatureTemplate.Type;
@@ -48,8 +49,6 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     /// <summary>The creature's user-facing name. Used in debug logs, <see cref="CreatureFormula"/>, and various Expedition features.</summary>
     /// <remarks>Defaults to the creature's type with spaces inserted after each lowercase letter that appears before a capital letter. For example, "BouncingBall" becomes "Bouncing Ball".</remarks>
     public string CreatureName { get; set; }
-    /// <summary>The creature's relevant information for Expedition challenges.</summary>
-    public ExpeditionInfo ExpeditionInfo { get; set; } = new();
 
     /// <summary>Gets a new instance of <see cref="CreatureState"/> for <paramref name="acrit"/>. If spawned by a sandbox unlock, the <c>SandboxData</c> section of the creature's state will equal that unlock's <see cref="SandboxUnlock.Data"/> value.</summary>
     /// <remarks>By default, this returns a <see cref="HealthState"/>.</remarks>
@@ -69,6 +68,18 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
     /// <remarks>By default, this returns the creature's ancestor, or <see langword="null"/> if it has none.</remarks>
     /// <returns>The creature type to spawn, or <see langword="null"/> to spawn nothing.</returns>
     public virtual CreatureType? ArenaFallback() => StaticWorld.GetCreatureTemplate(Type).ancestor?.type;
+    /// <summary>The creature's score when killed in Expedition mode.</summary>
+    /// <remarks>By default, this returns a relevant sandbox unlock score, or 0 if that's not applicable.</remarks>
+    public virtual int ExpeditionScore()
+    {
+        if (sandboxUnlocks.Count == 0) {
+            return 0;
+        }
+        if (sandboxUnlocks.FirstOrDefault(s => s.Type.value == Type.value) is SandboxUnlock unlock) {
+            return unlock.KillScore.Value;
+        }
+        return sandboxUnlocks[0].KillScore.Value;
+    }
     /// <summary>Gets the custom properties of a creature.</summary>
     /// <returns>An instance of <see cref="ItemProperties"/> or null.</returns>
     public virtual ItemProperties? Properties(Creature crit) => null;

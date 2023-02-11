@@ -13,7 +13,7 @@ namespace Mosquitoes;
 sealed class MosquitoCritob : Critob
 {
     public static readonly CreatureType Mosquito = new("Mosquito", true);
-    public static readonly MultiplayerUnlocks.SandboxUnlockID MosquitoUnlock = new("MosquitoUnlock", true);
+    public static readonly MultiplayerUnlocks.SandboxUnlockID MosquitoUnlock = new("Mosquito", true);
 
     public MosquitoCritob() : base(Mosquito)
     {
@@ -21,17 +21,6 @@ sealed class MosquitoCritob : Critob
         SandboxPerformanceCost = new(linear: 0.6f, exponential: 0.1f);
         ShelterDanger = ShelterDanger.Safe;
         CreatureName = "Blood Sucker";
-
-        // Not calling a `SpawnsForX` method here will prevent the creature from spawning for that character.
-        ExpeditionInfo = new() { Points = 3 };
-        ExpeditionInfo.SpawnsForWhite(30);
-        ExpeditionInfo.SpawnsForYellow(20);
-        ExpeditionInfo.SpawnsForRed(50);
-        ExpeditionInfo.SpawnsForGourmand(60);
-        ExpeditionInfo.SpawnsForArtificer(90);
-        ExpeditionInfo.SpawnsForRivulet(80);
-        ExpeditionInfo.SpawnsForSpear(80);
-        ExpeditionInfo.SpawnsForSaint(20);
 
         RegisterUnlock(killScore: KillScore.Configurable(2), MosquitoUnlock, parent: MultiplayerUnlocks.SandboxUnlockID.BigNeedleWorm, data: 0);
     }

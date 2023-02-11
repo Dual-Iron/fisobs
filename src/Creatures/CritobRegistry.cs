@@ -1,9 +1,10 @@
 ﻿using Fisobs.Core;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static StaticWorld;
 using CreatureType = CreatureTemplate.Type;
 
 namespace Fisobs.Creatures;
@@ -33,12 +34,15 @@ public sealed class CritobRegistry : Registry
     /// <inheritdoc/>
     protected override void Initialize()
     {
-        On.RainWorld.OnModsInit += RainWorld_OnModsInit;
-
         _ = GhostWorldPresence.GhostID.CC; // prevents a crash in ExpeditionTools.cctor() by executing ExtEnum<GhostID>.cctor()
+
+        IL.StaticWorld.InitStaticWorld += AddTemplates;
+        On.StaticWorld.InitStaticWorld += AddRelationships;
+
         On.Expedition.ChallengeTools.CreatureName += ChallengeTools_CreatureName;
-        On.Expedition.ChallengeTools.SetUpExpeditionCreatures += ChallengeTools_SetUpExpeditionCreatures;
-        On.StaticWorld.InitStaticWorld += StaticWorld_InitStaticWorld;
+        On.Expedition.ChallengeTools.GenerateCreatureScores += ChallengeTools_GenerateCreatureScores;
+
+        On.RainWorld.OnModsInit += RainWorld_OnModsInit;
 
         On.Player.CanEatMeat += Player_CanEatMeat;
         On.Player.Grabbed += PlayerGrabbed;
@@ -65,6 +69,55 @@ public sealed class CritobRegistry : Registry
         On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
     }
 
+    private void AddTemplates(ILContext il)
+    {
+        ILCursor cursor = new(il) { Index = il.Body.Instructions.Count - 1 };
+
+        cursor.GotoPrev(MoveType.Before, i => i.MatchStsfld(typeof(StaticWorld), "creatureTemplates"));
+        cursor.GotoPrev(MoveType.Before, i => i.MatchLdloc(0));
+
+        cursor.Emit(OpCodes.Ldloc_0);
+        cursor.EmitDelegate(AddTemplatesImpl);
+    }
+
+    private void AddTemplatesImpl(List<CreatureTemplate> templates)
+    {
+        // Fix until StaticWorld gets updated
+        StaticWorld.creatureTemplates = new CreatureTemplate[ExtEnum<CreatureType>.values.Count];
+        foreach (var template in templates.Where(t => t.type.Index != -1)) {
+            StaticWorld.creatureTemplates[template.type.Index] = template;
+        }
+
+        // Add custom templates
+        foreach (Critob critob in critobs.Values) {
+            var template = critob.CreateTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
+            if (template.type != critob.Type) {
+                throw new InvalidOperationException($"Critob \"{critob.Type}\" returned a template with an incorrect `type` field.");
+            }
+            templates.Add(template);
+        }
+
+        // Adjust relationship array sizes
+        foreach (CreatureTemplate template in templates) {
+            int oldRelationshipsLength = template.relationships.Length;
+
+            Array.Resize(ref template.relationships, templates.Count);
+
+            for (int i = oldRelationshipsLength; i < templates.Count; i++) {
+                template.relationships[i] = template.relationships[0];
+            }
+        }
+    }
+
+    private void AddRelationships(On.StaticWorld.orig_InitStaticWorld orig)
+    {
+        orig();
+
+        foreach (var critob in critobs.Values) {
+            critob.EstablishRelationships();
+        }
+    }
+
     private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
         orig(self);
@@ -85,110 +138,11 @@ public sealed class CritobRegistry : Registry
         }
     }
 
-    private void ChallengeTools_SetUpExpeditionCreatures(On.Expedition.ChallengeTools.orig_SetUpExpeditionCreatures orig)
+    private void ChallengeTools_GenerateCreatureScores(On.Expedition.ChallengeTools.orig_GenerateCreatureScores orig, ref Dictionary<string, int> dict)
     {
-        orig();
-        foreach (var critob in critobs.Values) {
-            Expedition.ChallengeTools.expeditionCreatures.Add(new() {
-                creature = critob.Type,
-                points = critob.ExpeditionInfo.Points,
-                spawns = Expedition.ChallengeTools.FilterSpawns(critob.ExpeditionInfo.spawns),
-            });
-        }
-    }
-
-    private void StaticWorld_InitStaticWorld(On.StaticWorld.orig_InitStaticWorld orig)
-    {
-        // Adjust critobs' enum indices
-        foreach (var critob in critobs.Values) {
-            critob.Type.Unregister();
-        }
-        foreach (var critob in critobs.Values) {
-            CreatureType.values.AddEntry(critob.Type.value);
-        }
-
-        orig();
-
-        try {
-            ApplyCritobs();
-        } catch (Exception e) {
-            Debug.LogException(e);
-            Debug.LogError($"An exception was thrown in {nameof(Fisobs)}.{nameof(Creatures)}::{nameof(ApplyCritobs)} with details logged.");
-            throw;
-        }
-    }
-
-    private void ApplyCritobs()
-    {
-        var newTemplates = new List<CreatureTemplate>();
-
-        // --- Generate new critob templates ---
-
-        foreach (Critob critob in critobs.Values) {
-            var template = critob.CreateTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
-            if (template.type != critob.Type) {
-                throw new InvalidOperationException($"Critob \"{critob.Type}\" returned a template with an incorrect `type` field.");
-            }
-            newTemplates.Add(template);
-        }
-
-        // --- Add new critob templates ---
-
-        // Allocate space for the new templates
-        int maxType = newTemplates.Max(t => (int)t.type);
-        int prebakedIndex = preBakedPathingCreatures.Length;
-        int quantifyIndex = quantifiedCreatures.Length;
-
-        Array.Resize(ref preBakedPathingCreatures, preBakedPathingCreatures.Length + newTemplates.Count(t => t.doPreBakedPathing));
-        Array.Resize(ref quantifiedCreatures, quantifiedCreatures.Length + newTemplates.Count(t => t.quantified));
-
-        if (creatureTemplates.Length < maxType + 1) {
-            int oldLen = creatureTemplates.Length;
-
-            Array.Resize(ref creatureTemplates, maxType + 1);
-
-            for (int i = oldLen; i < maxType + 1; i++) {
-                creatureTemplates[i] = new(new CreatureType($"Unknown", register: false), null, new(), new(), default) {
-                    name = "Unregistered HyperCam 2"
-                };
-            }
-        }
-
-        // Add the templates to their respective arrays in StaticWorld
-        foreach (CreatureTemplate newTemplate in newTemplates) {
-            if ((int)newTemplate.type >= creatureTemplates.Length) {
-                throw new InvalidOperationException(
-                    $"The CreatureTemplate.Type value {newTemplate.type} ({(int)newTemplate.type}) must be less than StaticWorld.creatureTemplates.Length ({creatureTemplates.Length}).");
-            }
-
-            // Add to StaticWorld collections
-            creatureTemplates[newTemplate.index = (int)newTemplate.type] = newTemplate;
-
-            if (newTemplate.doPreBakedPathing) {
-                preBakedPathingCreatures[newTemplate.PreBakedPathingIndex = prebakedIndex] = newTemplate;
-                prebakedIndex += 1;
-            }
-
-            if (newTemplate.quantified) {
-                quantifiedCreatures[newTemplate.quantifiedIndex = quantifyIndex] = newTemplate;
-                quantifyIndex += 1;
-            }
-        }
-
-        // --- Update creature-creature relationships ---
-
-        // Update existing vanilla relationships
-        foreach (CreatureTemplate template in creatureTemplates) {
-            int oldRelationshipsLength = template.relationships.Length;
-            Array.Resize(ref template.relationships, creatureTemplates.Length);
-            for (int i = oldRelationshipsLength; i < creatureTemplates.Length; i++) {
-                template.relationships[i] = template.relationships[0];
-            }
-        }
-
-        // Establish specific relationships
-        foreach (Critob critob in critobs.Values) {
-            critob.EstablishRelationships();
+        orig(ref dict);
+        foreach (var critob in critobs) {
+            dict[critob.Value.Type.value] = critob.Value.ExpeditionScore();
         }
     }
 
@@ -284,7 +238,7 @@ public sealed class CritobRegistry : Registry
     private bool KillsMatter(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureType creature)
     {
         var ret = orig(creature);
-        if (critobs.TryGetValue(GetCreatureTemplate(creature).type, out var critob)) {
+        if (critobs.TryGetValue(StaticWorld.GetCreatureTemplate(creature).type, out var critob)) {
             critob.KillsMatter(ref ret);
         }
         return ret;
@@ -355,7 +309,7 @@ public sealed class CritobRegistry : Registry
 
                 Array.Resize(ref templateIndices, templateIndices.Length + 1);
 
-                templateIndices[templateIndices.Length - 1] = GetCreatureTemplate(critob.Type).index;
+                templateIndices[templateIndices.Length - 1] = StaticWorld.GetCreatureTemplate(critob.Type).index;
             }
         }
 

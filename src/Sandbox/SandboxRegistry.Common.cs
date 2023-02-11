@@ -47,7 +47,7 @@ public sealed partial class SandboxRegistry : Registry
     {
         SandboxUnlock unlock = handler.SandboxUnlocks.FirstOrDefault(u => u.Data == p.data.intData);
 
-        if (!unlock.IsInitialized) {
+        if (unlock == null) {
             Debug.LogError($"The fisob \"{handler.Type}\" had no sandbox unlocks where Data={p.data.intData}.");
             return;
         }
@@ -69,7 +69,7 @@ public sealed partial class SandboxRegistry : Registry
     {
         foreach (var common in sboxes.Values) {
             var unlock = common.SandboxUnlocks.FirstOrDefault(u => u.Type == unlockID);
-            if (unlock.IsInitialized) {
+            if (unlock != null) {
                 return new(common.Type.CritType, common.Type.ObjectType, unlock.Data);
             }
         }
@@ -88,7 +88,7 @@ public sealed partial class SandboxRegistry : Registry
     {
         foreach (var common in sboxes.Values) {
             var unlock = common.SandboxUnlocks.FirstOrDefault(s => s.Type == unlockID);
-            if (unlock.IsInitialized) {
+            if (unlock != null) {
                 return unlock.Parent;
             }
         }

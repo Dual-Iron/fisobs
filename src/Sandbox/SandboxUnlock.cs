@@ -2,14 +2,11 @@
 
 namespace Fisobs.Sandbox;
 
-
 /// <summary>
 /// Represents a sandbox unlock.
 /// </summary>
-public readonly struct SandboxUnlock
+public sealed class SandboxUnlock
 {
-    internal readonly bool IsInitialized;
-
     /// <summary>
     /// The sandbox unlock type.
     /// </summary>
@@ -40,7 +37,6 @@ public readonly struct SandboxUnlock
     /// <param name="killScore">The creature unlock's kill score. This is ignored for items.</param>
     public SandboxUnlock(ID type, ID? parent, int data, KillScore killScore)
     {
-        IsInitialized = true;
         Type = type;
         Parent = parent;
         Data = data;
