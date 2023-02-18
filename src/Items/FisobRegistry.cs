@@ -82,17 +82,12 @@ public sealed class FisobRegistry : Registry
         var type = new ObjectType(data[1]);
 
         if (fisobs.TryGetValue(type, out Fisob o) && data.Length > 2) {
-            if (data.Length > 4) {
-                Debug.LogError($"Save data had more than 4 <oA> sections in fisob \"{o.Type}\". Override `APO.ToString()` to return `this.SaveAsString(...)`.");
-                return null;
-            }
-
             EntityID id = EntityID.FromString(data[0]);
             WorldCoordinate coord = WorldCoordinate.FromString(data[2]);
-            string customData = data.Length == 4 ? data[3] : "";
+            string customData = data.Length > 3 ? data[3] : "";
 
             try {
-                return o.Parse(world, new EntitySaveData(o.Type, id, coord, customData), null);
+                return o.Parse(world, new EntitySaveData(o.Type, id, coord, customData, SaveUtils.PopulateUnrecognizedStringAttrs(data, 4)), null);
             } catch (Exception e) {
                 Debug.LogException(e);
                 Debug.LogError($"An exception was thrown in {o.GetType().FullName}::Parse: {e.Message}");

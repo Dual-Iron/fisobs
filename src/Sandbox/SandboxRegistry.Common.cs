@@ -31,10 +31,10 @@ public sealed partial class SandboxRegistry : Registry
                 }
             }
 
-            DoSpawn(self, p, data ?? new(p.data.critType, id, coord, ""), critob);
+            DoSpawn(self, p, data ?? new(p.data.critType, id, coord, "", null), critob);
 
         } else if (sboxes.TryGetValue(p.data.itemType, out var fisob)) {
-            EntitySaveData data = new(p.data.itemType, id, coord, "");
+            EntitySaveData data = new(p.data.itemType, id, coord, "", null);
 
             DoSpawn(self, p, data, fisob);
 

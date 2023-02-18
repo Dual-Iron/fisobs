@@ -6,7 +6,7 @@ namespace Fisobs.Core;
 /// <summary>
 /// Represents saved information about <see cref="AbstractPhysicalObject"/> instances.
 /// </summary>
-public readonly struct EntitySaveData
+public sealed class EntitySaveData
 {
     /// <summary>
     /// The APO's type.
@@ -30,15 +30,31 @@ public readonly struct EntitySaveData
     public readonly string CustomData;
 
     /// <summary>
+    /// Unrecognized data associated with the APO. This is used by mods to dynamically add information to objects. For the most part, this should simply be ignored.
+    /// </summary>
+    public string UnrecognizedAttribute(int index) => unrecognizedAttributes[index];
+    /// <summary>
+    /// The number of <see cref="UnrecognizedAttribute(int)"/> elements saved by the APO.
+    /// </summary>
+    public int UnrecognizedAttributeCount => unrecognizedAttributes.Length;
+
+    private readonly string[] unrecognizedAttributes = Array.Empty<string>();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EntitySaveData"/> struct.
     /// </summary>
     /// <remarks>Do not use this constructor. Call <see cref="CreateFrom(AbstractPhysicalObject, string)"/> instead.</remarks>
-    internal EntitySaveData(PhysobType type, EntityID id, WorldCoordinate pos, string customData)
+    internal EntitySaveData(PhysobType type, EntityID id, WorldCoordinate pos, string customData, string[]? unrecognized)
     {
         Type = type;
         ID = id;
         Pos = pos;
         CustomData = customData;
+
+        if (unrecognized != null) {
+            unrecognizedAttributes = new string[unrecognized.Length];
+            unrecognized.CopyTo(unrecognizedAttributes, index: 0);
+        }
     }
 
     // Catches ASCII letters within <>s
@@ -68,10 +84,10 @@ public readonly struct EntitySaveData
         }
 
         if (apo is AbstractCreature crit) {
-            return new EntitySaveData(crit.creatureTemplate.type, apo.ID, apo.pos, customData);
+            return new EntitySaveData(crit.creatureTemplate.type, apo.ID, apo.pos, customData, apo.unrecognizedAttributes);
         }
 
-        return new EntitySaveData(apo.type, apo.ID, apo.pos, customData);
+        return new EntitySaveData(apo.type, apo.ID, apo.pos, customData, apo.unrecognizedAttributes);
     }
 
     /// <summary>
@@ -83,12 +99,10 @@ public readonly struct EntitySaveData
         if (Type.IsCrit) {
             string roomName = world?.GetAbstractRoom(Pos.room)?.name ?? Pos.ResolveRoomName() ?? Pos.room.ToString();
 
-            return $"{Type.CritType}<cA>{ID}<cA>{roomName}.{Pos.abstractNode}<cA>{CustomData}";
+            return SaveUtils.AppendUnrecognizedStringAttrs($"{Type.CritType}<cA>{ID}<cA>{roomName}.{Pos.abstractNode}<cA>{CustomData}", "<cA>", unrecognizedAttributes);
         }
 
-        string customDataStr = string.IsNullOrEmpty(CustomData) ? "" : $"<oA>{CustomData}";
-
-        return $"{ID}<oA>{Type.ObjectType}<oA>{Pos.SaveToString()}{customDataStr}";
+        return SaveUtils.AppendUnrecognizedStringAttrs($"{ID}<oA>{Type.ObjectType}<oA>{Pos.SaveToString()}<oA>{CustomData}", "<oA>", unrecognizedAttributes);
     }
 
     /// <summary>

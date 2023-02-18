@@ -57,7 +57,7 @@ public static class Ext
         if (apo.Room.realizedRoom != null)
             Spawn(apo, apo.Room.realizedRoom.MiddleOfTile(apo.pos.Tile), Vector2.zero);
         else
-            Debug.Log($"{nameof(Fisobs)} : TRYING TO REALIZE IN NON REALIZED ROOM! " + apo);
+            Debug.Log($"{nameof(Fisobs)} : TRYING TO REALIZE IN NON REALIZED ROOM! {apo}");
     }
 
     /// <summary>
