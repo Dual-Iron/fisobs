@@ -36,7 +36,7 @@ public sealed class CritobRegistry : Registry
     {
         _ = GhostWorldPresence.GhostID.CC; // prevents a crash in ExpeditionTools.cctor() by executing ExtEnum<GhostID>.cctor()
 
-        IL.StaticWorld.InitStaticWorld += AddTemplates;
+        On.StaticWorld.InitCustomTemplates += AddTemplates;
         On.StaticWorld.InitStaticWorld += AddRelationships;
 
         On.Expedition.ChallengeTools.CreatureName += ChallengeTools_CreatureName;
@@ -69,44 +69,19 @@ public sealed class CritobRegistry : Registry
         On.CreatureSymbol.SpriteNameOfCreature += CreatureSymbol_SpriteNameOfCreature;
     }
 
-    private void AddTemplates(ILContext il)
+    private void AddTemplates(On.StaticWorld.orig_InitCustomTemplates orig)
     {
-        ILCursor cursor = new(il) { Index = il.Body.Instructions.Count - 1 };
-
-        cursor.GotoPrev(MoveType.Before, i => i.MatchStsfld(typeof(StaticWorld), "creatureTemplates"));
-        cursor.GotoPrev(MoveType.Before, i => i.MatchLdloc(0));
-
-        cursor.Emit(OpCodes.Ldloc_0);
-        cursor.EmitDelegate(AddTemplatesImpl);
-    }
-
-    private void AddTemplatesImpl(List<CreatureTemplate> templates)
-    {
-        // Fix until StaticWorld gets updated
-        StaticWorld.creatureTemplates = new CreatureTemplate[ExtEnum<CreatureType>.values.Count];
-        foreach (var template in templates.Where(t => t.type.Index != -1)) {
-            StaticWorld.creatureTemplates[template.type.Index] = template;
-        }
-
+        orig();
         // Add custom templates
         foreach (Critob critob in critobs.Values) {
             var template = critob.CreateTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
-            if (template.type != critob.Type) {
+            if (template.type != critob.Type || template.type.Index == -1) {
                 throw new InvalidOperationException($"Critob \"{critob.Type}\" returned a template with an incorrect `type` field.");
             }
-            templates.Add(template);
+            StaticWorld.creatureTemplates[template.type.Index] = template;
         }
-
-        // Adjust relationship array sizes
-        foreach (CreatureTemplate template in templates) {
-            int oldRelationshipsLength = template.relationships.Length;
-
-            Array.Resize(ref template.relationships, templates.Count);
-
-            for (int i = oldRelationshipsLength; i < templates.Count; i++) {
-                template.relationships[i] = template.relationships[0];
-            }
-        }
+        // You don't need to resize CreatureTemplate.relationships as it uses CreatureTemplate.Type.values.Count as length
+        // Same applies for StaticWorld.creatureTemplates
     }
 
     private void AddRelationships(On.StaticWorld.orig_InitStaticWorld orig)
