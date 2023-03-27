@@ -6,5 +6,6 @@
   "description": "A library that simplifies adding new objects to Rain World.<LINE><LINE>github.com/Dual-Iron/fisobs",
   "requirements": [],
   "requirements_names": [],
+  "tags": [ "Dependency" ]
   "checksum_override_version": false
 }
