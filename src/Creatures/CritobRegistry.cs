@@ -72,7 +72,9 @@ public sealed class CritobRegistry : Registry
     private void AddTemplates(On.StaticWorld.orig_InitCustomTemplates orig)
     {
         orig();
+
         // Add custom templates
+        // No need to resize CreatureTemplate.relationships or StaticWorld.creatureTemplates, because they use CreatureTemplate.Type.values.Count for length
         foreach (Critob critob in critobs.Values) {
             var template = critob.CreateTemplate() ?? throw new InvalidOperationException($"Critob \"{critob.Type}\" returned null in GetTemplate().");
             if (template.type != critob.Type || template.type.Index == -1) {
@@ -80,8 +82,6 @@ public sealed class CritobRegistry : Registry
             }
             StaticWorld.creatureTemplates[template.type.Index] = template;
         }
-        // You don't need to resize CreatureTemplate.relationships as it uses CreatureTemplate.Type.values.Count as length
-        // Same applies for StaticWorld.creatureTemplates
     }
 
     private void AddRelationships(On.StaticWorld.orig_InitStaticWorld orig)
