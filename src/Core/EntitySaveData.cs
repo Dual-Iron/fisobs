@@ -94,15 +94,16 @@ public sealed class EntitySaveData
     /// Gets this entity's save data as a string.
     /// </summary>
     /// <returns>A string representation of this data.</returns>
-    public string ToString(World? world)
+    public string ToString(AbstractPhysicalObject? apo)
     {
         if (Type.IsCrit) {
-            string roomName = world?.GetAbstractRoom(Pos.room)?.name ?? Pos.ResolveRoomName() ?? Pos.room.ToString();
-
-            return SaveUtils.AppendUnrecognizedStringAttrs($"{Type.CritType}<cA>{ID}<cA>{roomName}.{Pos.abstractNode}<cA>{CustomData}", "<cA>", unrecognizedAttributes);
+            string roomName = apo?.world.GetAbstractRoom(Pos.room)?.name ?? Pos.ResolveRoomName() ?? Pos.room.ToString();
+            string baseStringC = $"{Type.CritType}<cA>{ID}<cA>{roomName}.{Pos.abstractNode}<cA>{CustomData}";
+            return SaveUtils.AppendUnrecognizedStringAttrs(baseStringC, "<cA>", unrecognizedAttributes);
         }
 
-        return SaveUtils.AppendUnrecognizedStringAttrs($"{ID}<oA>{Type.ObjectType}<oA>{Pos.SaveToString()}<oA>{CustomData}", "<oA>", unrecognizedAttributes);
+        string baseString = $"{ID}<oA>{Type.ObjectType}<oA>{Pos.SaveToString()}<oA>{CustomData}";
+        return SaveUtils.AppendUnrecognizedStringAttrs(SaveState.SetCustomData(apo, baseString), "<oA>", unrecognizedAttributes);
     }
 
     /// <summary>
