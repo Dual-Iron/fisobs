@@ -78,7 +78,7 @@ public static class Ext
     /// <returns>True if the space is clear.</returns>
     public static bool IsFreeSpace(this AImap map, IntVector2 tile, int tilesOfFreeSpace)
     {
-        return map.getAItile(tile).terrainProximity >= tilesOfFreeSpace;
+        return map.getTerrainProximity(tile) >= tilesOfFreeSpace;
     }
 
     /// <summary>

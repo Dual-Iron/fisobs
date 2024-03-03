@@ -143,12 +143,15 @@ sealed class Mosquito : InsectoidCreature, IPlayerEdible
         }
 
         var pather = AI.pathFinder as StandardPather;
-        var movementConnection = pather!.FollowPath(room.GetWorldCoordinate(followingPos), true) ?? pather.FollowPath(room.GetWorldCoordinate(followingPos), true);
-        if (movementConnection != null) {
+        var movementConnection = pather!.FollowPath(room.GetWorldCoordinate(followingPos), true);
+        if (movementConnection == default) {
+            movementConnection = pather.FollowPath(room.GetWorldCoordinate(followingPos), true);
+        }
+        if (movementConnection != default) {
             Run(movementConnection);
         } else {
             if (lastFollowedConnection != null) {
-                MoveTowards(room.MiddleOfTile(lastFollowedConnection.DestTile));
+                MoveTowards(room.MiddleOfTile(lastFollowedConnection.Value.DestTile));
             }
             if (Submersion > .5) {
                 firstChunk.vel += new Vector2((Random.value - .5f) * .5f, Random.value * .5f);
