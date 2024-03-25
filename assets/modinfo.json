@@ -1,8 +1,8 @@
 ﻿{
   "id": "fisobs",
   "name": "Fisobs",
-  "version": "4.0.4",
-  "authors": "Dual, M4rbleL1ne, topicular",
+  "version": "4.0.5",
+  "authors": "Dual, M4rbleL1ne, topicular, Vigaro",
   "description": "A library that simplifies adding new objects to Rain World.<LINE><LINE>Learn to use at github.com/Dual-Iron/fisobs",
   "requirements": [],
   "requirements_names": [],
