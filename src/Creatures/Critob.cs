@@ -164,7 +164,7 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
             pos = data.Pos
         };
         crit.state.LoadFromString(stateString.Split(new string[] { "<cB>" }, StringSplitOptions.RemoveEmptyEntries));
-        crit.setCustomFlags();
+        //crit.setCustomFlags(); // theres some sort of problem with this
         return crit;
     }
 }

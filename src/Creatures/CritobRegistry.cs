@@ -154,7 +154,7 @@ public sealed class CritobRegistry : Registry
             if (self.abstractAI != null && self.creatureTemplate.AI) {
                 self.abstractAI.RealAI = crit.CreateRealizedAI(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedAI returned null but template.AI was true!");
             } else if (!self.creatureTemplate.AI && crit.CreateRealizedAI(self) != null) {
-                Debug.LogError($"{crit.GetType()}::GetRealizedAI returned a non-null object but template.AI was false!");
+                UnityEngine.Debug.LogError($"{crit.GetType()}::GetRealizedAI returned a non-null object but template.AI was false!");
             }
         }
     }
@@ -200,7 +200,7 @@ public sealed class CritobRegistry : Registry
                     self.abstractAI.denPosition = pos;
                 }
             } else if (abstractAI != null) {
-                Debug.LogError($"{critob.GetType()}::GetAbstractAI returned a non-null object but template.AI was false!");
+                UnityEngine.Debug.LogError($"{critob.GetType()}::GetAbstractAI returned a non-null object but template.AI was false!");
             }
 
             // Arbitrary setup
