@@ -108,15 +108,21 @@ public sealed partial class SandboxRegistry : Registry
         }
     }
 
+    // This was always removing unlocks even if another unrelated mod was disabled, now it only removes unlocks if fisobs is disabled.
+    // There's currently no short way to check for the critob's mod ID, and disabling code mods requires reloading anyway.
     private void RainWorld_OnModsDisabled(On.RainWorld.orig_OnModsDisabled orig, RainWorld self, ModManager.Mod[] newlyDisabledMods)
     {
         orig(self, newlyDisabledMods);
-
-        foreach (var sbox in sboxes.Values) {
-            if (sbox.Type.IsCrit) {
-                Update(MultiplayerUnlocks.CreatureUnlockList, sbox.SandboxUnlocks, remove: true);
-            } else {
-                Update(MultiplayerUnlocks.ItemUnlockList, sbox.SandboxUnlocks, remove: true);
+        for (var i = 0; i < newlyDisabledMods.Length; i++) {
+            if (newlyDisabledMods[i].id == "io.github.dual.fisobs") {
+                foreach (var sbox in sboxes.Values) {
+                    if (sbox.Type.IsCrit) {
+                        Update(MultiplayerUnlocks.CreatureUnlockList, sbox.SandboxUnlocks, remove: true);
+                    } else {
+                        Update(MultiplayerUnlocks.ItemUnlockList, sbox.SandboxUnlocks, remove: true);
+                    }
+                }
+                break;
             }
         }
     }
