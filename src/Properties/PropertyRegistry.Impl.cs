@@ -31,9 +31,9 @@ public sealed partial class PropertyRegistry : Registry
         return ret;
     }
 
-    private int ScavengerAI_WeaponScore(On.ScavengerAI.orig_WeaponScore orig, ScavengerAI self, PhysicalObject obj, bool pickupDropInsteadOfWeaponSelection)
+    private int ScavengerAI_WeaponScore(On.ScavengerAI.orig_WeaponScore orig, ScavengerAI self, PhysicalObject obj, bool pickupDropInsteadOfWeaponSelection, bool reallyWantsSpear)
     {
-        int ret = orig(self, obj, pickupDropInsteadOfWeaponSelection);
+        int ret = orig(self, obj, pickupDropInsteadOfWeaponSelection, reallyWantsSpear);
 
         if (pickupDropInsteadOfWeaponSelection)
             P(obj)?.ScavWeaponPickupScore(self.scavenger, ref ret);

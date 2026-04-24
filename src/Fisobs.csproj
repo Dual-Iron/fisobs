@@ -12,12 +12,13 @@
     <Reference Include="../lib/*.dll" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists('$(RainWorldDir)')">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <Assets Include="$(ProjectDir)../assets/**/*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(Assets)" DestinationFiles="$(RainWorldDir)/RainWorld_Data/StreamingAssets/mods/$(ProjectName)/%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RainWorldDir)/RainWorld_Data/StreamingAssets/mods/$(ProjectName)/newest/plugins" />
+    <Copy SourceFiles="@(Assets)" DestinationFiles="$(ProjectDir)../Fisobs/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)../Fisobs/newest/plugins" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="../Fisobs/newest/plugins/" />
   </Target>
 
 </Project>
