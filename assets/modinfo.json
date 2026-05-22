@@ -8,9 +8,9 @@
   "requirements_names": [],
   "tags": [
     "Dependency",
-	"Base",
-	"Downpour",
-	"Watcher"
+    "Base",
+    "Downpour",
+    "Watcher"
   ],
   "checksum_override_version": false
 }

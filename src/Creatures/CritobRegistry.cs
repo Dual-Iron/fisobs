@@ -155,12 +155,13 @@ public sealed class CritobRegistry : Registry
                 Debug.LogError($"{crit.GetType()}::GetRealizedAI returned a non-null object but template.AI was false!");
             }
         } else {
-            orig(self); // fixes a crash with inheritance
+            orig(self); // 1.10.2 support: fixes a crash with inheritance
         }
     }
 
     private void Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
-    { // this Room null check was in the original method, so some crtiobs might expect it in their CreateRealizedCreature method
+    {
+        // this Room null check was in the original method, so some crtiobs might expect it in their CreateRealizedCreature method
         if (self.Room != null && self.realizedCreature == null && critobs.TryGetValue(self.creatureTemplate.type, out var crit)) {
             self.realizedObject = crit.CreateRealizedCreature(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedCreature returned null!");
 
