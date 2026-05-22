@@ -21,6 +21,12 @@ sealed class Plugin : BaseUnityPlugin
 
         // Protect the player from grabs while holding a shield
         On.Creature.Grab += CreatureGrab;
+
+        // Allow BeastMaster to spawn CentiShields
+        On.AbstractPhysicalObject.Realize += AbstractPhysicalObjectRealize;
+
+        // Allow swallowing object, uncomment to allow players to swallow CentiShields
+        //On.Player.CanBeSwallowed += PlayerCanBeSwallowed;
     }
 
     void RoomAddObject(On.Room.orig_AddObject orig, Room self, UpdatableAndDeletable obj)
@@ -58,5 +64,27 @@ sealed class Plugin : BaseUnityPlugin
         }
 
         return orig(self, obj, _, _2, _3, dominance, _4, _5);
+    }
+
+    void AbstractPhysicalObjectRealize(On.AbstractPhysicalObject.orig_Realize orig, AbstractPhysicalObject self)
+    {
+        if (self.realizedObject == null && self.type == CentiShieldFisob.CentiShield && self is not CentiShieldAbstract) {
+            CentiShieldAbstract result = new CentiShieldAbstract(self.world, self.pos, self.ID);
+            result.hue = 0f;
+            result.saturation = 1f;
+            result.scaleX = 1.2f;
+            result.scaleY = 1.2f;
+            result.damage = 0f;
+            self.realizedObject = new CentiShield(result, self.pos.Tile.ToVector2(), new Vector2());
+        }
+
+        orig(self);
+    }
+
+    bool PlayerCanBeSwallowed(On.Player.orig_CanBeSwallowed orig, Player self, PhysicalObject testObj)
+    {
+        bool ret = orig(self, testObj);
+        ret |= testObj is CentiShield;
+        return ret;
     }
 }
