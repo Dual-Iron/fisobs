@@ -1,27 +1,35 @@
 name: Build Fisobs
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     name: Build .NET assemblies
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
     steps:
-    - name: Check out repo
-      uses: actions/checkout@v3
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '7.0.x'
-    - name: Build solution
-      run: dotnet publish Fisobs.sln -c Release -o output
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        path: |
-          output/Fisobs.dll
-          output/Fisobs.xml
-          output/CentiShields.dll
-          output/Mosquitoes.dll
+      - name: Check out repo
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Build solution
+        run: dotnet publish Fisobs.sln -c Release -o output
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: fisobs-build
+          path: |
+            output/Fisobs.dll
+            output/Fisobs.xml
+            output/CentiShields.dll
+            output/Mosquitoes.dll
