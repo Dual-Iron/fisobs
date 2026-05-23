@@ -1,4 +1,5 @@
-﻿using ID = MultiplayerUnlocks.SandboxUnlockID;
+﻿using System.Collections.Generic;
+using ID = MultiplayerUnlocks.SandboxUnlockID;
 
 namespace Fisobs.Sandbox;
 
@@ -46,7 +47,7 @@ public sealed class SandboxUnlock
         Parent = parent;
         Data = data;
         KillScore = killScore;
-        InsertAfter = [];
+        InsertAfter = new();
     }
 
     /// <summary>
