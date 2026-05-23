@@ -29,6 +29,11 @@ public sealed class SandboxUnlock
     public readonly KillScore KillScore;
 
     /// <summary>
+    /// A list of sandbox unlocks to attempt inserting after. Will go in order until it finds a match.
+    /// </summary>
+    public readonly List<ID> InsertAfter;
+
+    /// <summary>
     /// Creates a new instance of the <see cref="SandboxUnlock"/> class.
     /// </summary>
     /// <param name="type">The sandbox unlock type.</param>
@@ -41,5 +46,23 @@ public sealed class SandboxUnlock
         Parent = parent;
         Data = data;
         KillScore = killScore;
+        InsertAfter = [];
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="SandboxUnlock"/> class.
+    /// </summary>
+    /// <param name="type">The sandbox unlock type.</param>
+    /// <param name="parent">The sandbox's parent unlock. If the parent type's token has been collected in story mode, then this item will be unlocked. To unconditionally unlock this item, set <paramref name="parent"/> to <see cref="ID.Slugcat"/>.</param>
+    /// <param name="data">The sandbox unlock's data value. This takes the place of <see cref="Core.Icon.Data(AbstractPhysicalObject)"/> when spawning objects from sandbox mode.</param>
+    /// <param name="killScore">The creature unlock's kill score. This is ignored for items.</param>
+    /// <param name="insertAfter">The sandbox unlock(s) to attempt to insert after, in order until it finds a match.</param>
+    public SandboxUnlock(ID type, ID? parent, int data, KillScore killScore, List<ID> insertAfter)
+    {
+        Type = type;
+        Parent = parent;
+        Data = data;
+        KillScore = killScore;
+        InsertAfter = insertAfter;
     }
 }

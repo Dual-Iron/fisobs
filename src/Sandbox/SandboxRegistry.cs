@@ -33,7 +33,22 @@ public sealed partial class SandboxRegistry : Registry
             if (remove) {
                 list.Remove(unlock.Type);
             } else if (!list.Contains(unlock.Type)) {
-                list.Add(unlock.Type);
+                // Attempt to find place to insert
+                bool wasInserted = false;
+                if (unlock.InsertAfter.Length > 0) {
+                    foreach (var other in unlock.InsertAfter) {
+                        if (list.Contains(other)) {
+                            wasInserted = true;
+                            list.Insert(list.IndexOf(other) + 1, unlock.Type);
+                            break;
+                        }
+                    }
+                }
+
+                // Just add it to the end if not
+                if (!wasInserted) {
+                    list.Add(unlock.Type);
+                }
             }
         }
     }
