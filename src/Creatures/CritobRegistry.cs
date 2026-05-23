@@ -148,8 +148,6 @@ public sealed class CritobRegistry : Registry
 
     private void InitiateAI(On.AbstractCreature.orig_InitiateAI orig, AbstractCreature self)
     {
-        orig(self);
-
         if (critobs.TryGetValue(self.creatureTemplate.type, out var crit)) {
             if (self.abstractAI != null && self.creatureTemplate.AI) {
                 self.abstractAI.RealAI = crit.CreateRealizedAI(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedAI returned null but template.AI was true!");
@@ -157,11 +155,15 @@ public sealed class CritobRegistry : Registry
                 Debug.LogError($"{crit.GetType()}::GetRealizedAI returned a non-null object but template.AI was false!");
             }
         }
+        else
+        {
+            orig(self);
+        }
     }
 
     private void Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
     {
-        if (self.realizedCreature == null && critobs.TryGetValue(self.creatureTemplate.type, out var crit)) {
+        if (self.Room != null && self.realizedCreature == null && critobs.TryGetValue(self.creatureTemplate.type, out var crit)) {
             self.realizedObject = crit.CreateRealizedCreature(self) ?? throw new InvalidOperationException($"{crit.GetType()}::GetRealizedCreature returned null!");
 
             self.InitiateAI();

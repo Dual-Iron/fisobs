@@ -112,11 +112,16 @@ public sealed partial class SandboxRegistry : Registry
     {
         orig(self, newlyDisabledMods);
 
-        foreach (var sbox in sboxes.Values) {
-            if (sbox.Type.IsCrit) {
-                Update(MultiplayerUnlocks.CreatureUnlockList, sbox.SandboxUnlocks, remove: true);
-            } else {
-                Update(MultiplayerUnlocks.ItemUnlockList, sbox.SandboxUnlocks, remove: true);
+        for (var i = 0; i < newlyDisabledMods.Length; i++) {
+            if (newlyDisabledMods[i].id == "io.github.dual.fisobs") {
+                foreach (var sbox in sboxes.Values) {
+                    if (sbox.Type.IsCrit) {
+                        Update(MultiplayerUnlocks.CreatureUnlockList, sbox.SandboxUnlocks, remove: true);
+                    } else {
+                        Update(MultiplayerUnlocks.ItemUnlockList, sbox.SandboxUnlocks, remove: true);
+                    }
+                }
+                break;
             }
         }
     }
