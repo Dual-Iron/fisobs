@@ -35,7 +35,7 @@ public sealed partial class SandboxRegistry : Registry
             } else if (!list.Contains(unlock.Type)) {
                 // Attempt to find place to insert
                 bool wasInserted = false;
-                if (unlock.InsertAfter.Length > 0) {
+                if (unlock.InsertAfter.Count > 0) {
                     foreach (var other in unlock.InsertAfter) {
                         if (list.Contains(other)) {
                             wasInserted = true;
