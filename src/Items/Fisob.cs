@@ -75,7 +75,7 @@ public abstract class Fisob : IContent, IPropertyHandler, ISandboxHandler
     /// <summary>
     /// Registers a sandbox unlock under this fisob.
     /// </summary>
-    /// <param name="insertAfter">The unlocks to attempt to insert the unlock after. Will insert after the first item in the list that is found. If none are found, inserts last.</param>
+    /// <param name="insertAfter">The unlocks to attempt to insert the unlock after. Will insert after the first item in the list that is found. If none are found, inserts last. (Must be item unlocks)</param>
     /// <param name="type">The sandbox unlock type.</param>
     /// <param name="parent">The sandbox's parent unlock. If the parent type's token has been collected in story mode, then this item will be unlocked. To unconditionally unlock this item, set <paramref name="parent"/> to <see cref="MultiplayerUnlocks.SandboxUnlockID.Slugcat"/>.</param>
     /// <param name="data">The sandbox unlock's data value. This takes the place of <see cref="Icon.Data(AbstractPhysicalObject)"/> when spawning objects from sandbox mode.</param>
