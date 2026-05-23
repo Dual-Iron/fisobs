@@ -21,8 +21,8 @@ sealed class CentiShieldFisob : Fisob
 
         SandboxPerformanceCost = new(linear: 0.35f, exponential: 0f);
 
-        RegisterUnlock(OrangeCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.BigCentipede, data: 70);
-        RegisterUnlock(RedCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.RedCentipede, data: 0);
+        RegisterUnlock(new() { MultiplayerUnlocks.SandboxUnlockID.ScavengerBomb }, OrangeCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.BigCentipede, data: 70);
+        RegisterUnlock(new() { OrangeCentiShield }, RedCentiShield, parent: MultiplayerUnlocks.SandboxUnlockID.RedCentipede, data: 0);
     }
 
     public override AbstractPhysicalObject Parse(World world, EntitySaveData saveData, SandboxUnlock? unlock)

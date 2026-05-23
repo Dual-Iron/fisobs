@@ -3,7 +3,6 @@ using Fisobs.Properties;
 using Fisobs.Sandbox;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using ObjectType = AbstractPhysicalObject.AbstractObjectType;
 
 namespace Fisobs.Items;
@@ -71,6 +70,18 @@ public abstract class Fisob : IContent, IPropertyHandler, ISandboxHandler
     public void RegisterUnlock(MultiplayerUnlocks.SandboxUnlockID type, MultiplayerUnlocks.SandboxUnlockID? parent = null, int data = 0)
     {
         sandboxUnlocks.Add(new(type, parent, data, default));
+    }
+
+    /// <summary>
+    /// Registers a sandbox unlock under this fisob.
+    /// </summary>
+    /// <param name="insertAfter">The unlocks to attempt to insert the unlock after. Will insert after the first item in the list that is found. If none are found, inserts last. (Must be item unlocks)</param>
+    /// <param name="type">The sandbox unlock type.</param>
+    /// <param name="parent">The sandbox's parent unlock. If the parent type's token has been collected in story mode, then this item will be unlocked. To unconditionally unlock this item, set <paramref name="parent"/> to <see cref="MultiplayerUnlocks.SandboxUnlockID.Slugcat"/>.</param>
+    /// <param name="data">The sandbox unlock's data value. This takes the place of <see cref="Icon.Data(AbstractPhysicalObject)"/> when spawning objects from sandbox mode.</param>
+    public void RegisterUnlock(List<MultiplayerUnlocks.SandboxUnlockID> insertAfter, MultiplayerUnlocks.SandboxUnlockID type, MultiplayerUnlocks.SandboxUnlockID? parent = null, int data = 0)
+    {
+        sandboxUnlocks.Add(new(type, parent, data, default, insertAfter));
     }
 
     PhysobType IPropertyHandler.Type => Type;

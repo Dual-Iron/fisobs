@@ -140,6 +140,19 @@ public abstract class Critob : IContent, IPropertyHandler, ISandboxHandler
         sandboxUnlocks.Add(new(type, parent, data, killScore));
     }
 
+    /// <summary>
+    /// Registers a sandbox unlock under this critob.
+    /// </summary>
+    /// <param name="insertAfter">The unlocks to attempt to insert the unlock after. Will insert after the first item in the list that is found. If none are found, inserts last. (Must be creature unlocks)</param>
+    /// <param name="killScore">The creature unlock's kill score. This is ignored for items.</param>
+    /// <param name="type">The sandbox unlock type.</param>
+    /// <param name="parent">The sandbox's parent unlock. If the parent type's token has been collected in story mode, then this item will be unlocked. To unconditionally unlock this item, set <paramref name="parent"/> to <see cref="MultiplayerUnlocks.SandboxUnlockID.Slugcat"/>.</param>
+    /// <param name="data">The sandbox unlock's data value. This takes the place of <see cref="Icon.Data(AbstractPhysicalObject)"/> when spawning objects from sandbox mode.</param>
+    public void RegisterUnlock(List<MultiplayerUnlocks.SandboxUnlockID> insertAfter, KillScore killScore, MultiplayerUnlocks.SandboxUnlockID type, MultiplayerUnlocks.SandboxUnlockID? parent = null, int data = 0)
+    {
+        sandboxUnlocks.Add(new(type, parent, data, killScore, insertAfter));
+    }
+
     PhysobType IPropertyHandler.Type => Type;
     PhysobType ISandboxHandler.Type => Type;
 

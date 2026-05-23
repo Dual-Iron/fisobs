@@ -33,7 +33,22 @@ public sealed partial class SandboxRegistry : Registry
             if (remove) {
                 list.Remove(unlock.Type);
             } else if (!list.Contains(unlock.Type)) {
-                list.Add(unlock.Type);
+                // Attempt to find place to insert
+                bool wasInserted = false;
+                if (unlock.InsertAfter.Count > 0) {
+                    foreach (var other in unlock.InsertAfter) {
+                        if (list.Contains(other)) {
+                            wasInserted = true;
+                            list.Insert(list.IndexOf(other) + 1, unlock.Type);
+                            break;
+                        }
+                    }
+                }
+
+                // Just add it to the end if not
+                if (!wasInserted) {
+                    list.Add(unlock.Type);
+                }
             }
         }
     }
@@ -42,7 +57,6 @@ public sealed partial class SandboxRegistry : Registry
     protected override void Initialize()
     {
         // Sandbox UI
-        On.Menu.SandboxSettingsInterface.ReinitInterface += SandboxSettingsInterface_ReinitInterface1;
         On.RainWorld.OnModsInit += RainWorld_OnModsInit;
         On.RainWorld.OnModsDisabled += RainWorld_OnModsDisabled;
 
@@ -58,40 +72,6 @@ public sealed partial class SandboxRegistry : Registry
         On.MultiplayerUnlocks.TiedSandboxIDs += TiedSandboxIDs;
         On.PlayerProgression.MiscProgressionData.GetTokenCollected_SandboxUnlockID += GetCollected; // force-assume slugcat token is collected
         On.ArenaBehaviors.SandboxEditor.GetPerformanceEstimate += SandboxEditor_GetPerformanceEstimate;
-    }
-
-    private void SandboxSettingsInterface_ReinitInterface1(On.Menu.SandboxSettingsInterface.orig_ReinitInterface orig, SandboxSettingsInterface self)
-    {
-        orig(self);
-
-        if (self.nextPage != null && self.prevPage != null) {
-            self.RemoveSubObject(self.nextPage);
-            self.RemoveSubObject(self.prevPage);
-            self.nextPage.RemoveSprites();
-            self.prevPage.RemoveSprites();
-            self.nextPage = null;
-            self.prevPage = null;
-        }
-
-        self.subObjects.Add(new Paginator(self, Vector2.zero));
-
-        foreach (var ctrl in self.scoreControllers) {
-            ctrl.RemoveSprites();
-            self.RemoveSubObject(ctrl);
-        }
-        self.scoreControllers.Clear();
-
-        var __ = new IntVector2();
-        var show = SandboxSettingsInterface.GetSandboxUnlocksToShow();
-        foreach (var unlock in show) {
-            self.AddScoreButton(unlock, ref __);
-        }
-
-        self.AddPositionedScoreButton(new SandboxSettingsInterface.MiscScore(self.menu, self, self.menu.Translate("Food"), "FOODSCORE"), ref __, default);
-        self.AddPositionedScoreButton(new SandboxSettingsInterface.MiscScore(self.menu, self, self.menu.Translate("Survive"), "SURVIVESCORE"), ref __, default);
-        self.AddPositionedScoreButton(new SandboxSettingsInterface.MiscScore(self.menu, self, self.menu.Translate("Spear hit"), "SPEARHITSCORE"), ref __, default);
-
-        self.scoreControllers.ForEach(s => s.scoreDragger.UpdateScoreText());
     }
 
 
