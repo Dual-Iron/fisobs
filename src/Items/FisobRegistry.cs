@@ -1,6 +1,7 @@
 ﻿using Fisobs.Core;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using ObjectType = AbstractPhysicalObject.AbstractObjectType;
 
@@ -82,12 +83,27 @@ public sealed class FisobRegistry : Registry
         var type = new ObjectType(data[1]);
 
         if (fisobs.TryGetValue(type, out Fisob o) && data.Length > 2) {
-            EntityID id = EntityID.FromString(data[0]);
+
+            string key = "<oB>";
+            int rippleLayer = 0;
+            EntityID id;
+
+            if (data[0].Contains(key)) {
+               var s = Regex.Split(data[0], key);
+                id = EntityID.FromString(s[0]);
+                rippleLayer = int.Parse(s[1]);
+            } else {
+                id = EntityID.FromString(data[0]);
+            }
+
+            // EntityID id = EntityID.FromString(data[0]);
             WorldCoordinate coord = WorldCoordinate.FromString(data[2]);
             string customData = data.Length > 3 ? data[3] : "";
 
             try {
-                return o.Parse(world, new EntitySaveData(o.Type, id, coord, customData, SaveUtils.PopulateUnrecognizedStringAttrs(data, 4)), null);
+               var obj = o.Parse(world, new EntitySaveData(o.Type, id, coord, customData, SaveUtils.PopulateUnrecognizedStringAttrs(data, 4)), null);
+               obj.rippleLayer = rippleLayer;
+               return obj;
             } catch (Exception e) {
                 Debug.LogException(e);
                 Debug.LogError($"An exception was thrown in {o.GetType().FullName}::Parse: {e.Message}");
@@ -95,6 +111,6 @@ public sealed class FisobRegistry : Registry
             }
         }
 
-        return orig(world, objString);
+        return orig(world, objString);        
     }
 }
